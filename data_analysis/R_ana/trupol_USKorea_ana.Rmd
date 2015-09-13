@@ -1,0 +1,269 @@
+---
+title: "trupol US data"
+author: "Erica Yoon"
+date: "August 29, 2015"
+output: html_document
+---
+```{r}
+# trupol_ana_preprocess
+
+rm(list=ls())
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(tidyr)
+source("/Users/ericang/Documents/Research/Politeness/trupol_git/data_analysis/helper/useful.R")
+
+d <- read.csv("/Users/ericang/Documents/Research/Politeness/trupol_git/data_analysis/data/trupol_data.csv")
+log <- read.csv("/Users/ericang/Documents/Research/Politeness/trupol_git/data_analysis/info/trupol_subj.csv")
+
+# join with subj log
+d <- join(d, log)
+
+# select key vars 
+d <- d %>%
+  select(subid, Age, site, trial1_2_evalCorrect, trial1_2_playCorrect, trial3_4_playCorrect, trial3_4_evalCorrect, trial1_niceness, trial2_niceness, trial3_niceness, trial4_niceness, trial1_Lfeel_val, trial2_Lfeel_val, trial3_Lfeel_val, trial4_Lfeel_val)
+
+# categorize age
+d$Age <- as.numeric(as.character(d$Age))
+d <- cbind(d, age_cat = cut(d$Age, breaks=c(3, 4, 5, 6, 7)))
+levels(d$age_cat) <- c("3", "4", "5", "6")
+summary(d$age_cat)
+
+# reshape data
+d <- d %>%
+  gather("q", "answer", 4:15)
+
+# add columns to categorize vars
+d1 <- d %>%
+  mutate(polite = factor(substring(q, 1, 8),
+                         levels = c("trial1_2", "trial3_4", 
+                                    "trial1_n", "trial2_n", "trial3_n", "trial4_n",
+                                    "trial1_L", "trial2_L", "trial3_L", "trial4_L"),
+                         labels = c("NA", "NA",
+                                    "impolite", "polite", "polite", "impolite",
+                                    "impolite", "polite", "polite", "impolite")),
+         q_kind = factor(substring(q, 8, 10),
+                         levels = c("2_e", "2_p", "4_p", "4_e",
+                                    "nic", "Lfe"),
+                         labels = c("eval", "play", "play", "eval",
+                                    "niceness", "Lfeel")))
+d1$polite <- as.factor(as.character(d1$polite))
+d1$q_kind <- as.factor(as.character(d1$q_kind))
+d1$answer <- as.factor(as.character(d1$answer))
+levels(d1$answer) <- c("NA", "NA", "0", "NA", "1", "2", "3", "4", "5", "0", "1")
+d1$answer <- as.numeric(as.character(d1$answer))
+```
+
+# correct responses on eval and play questions
+
+play: "who do you want to play with?"
+eval: "whose snack do you think is tastier (given the same utterance)?"
+
+```{r}
+# plot: eval and play
+mss <- d1 %>%
+  filter(q_kind == "play" | q_kind == "eval") %>%
+  group_by(q_kind, age_cat, site, subid) %>%
+  summarize(
+    answer = mean(answer, na.rm=TRUE)
+  )
+ms <- aggregate(answer ~ q_kind + age_cat + site, mss, mean)
+ms$cih <- aggregate(answer ~ q_kind + age_cat + site, mss, ci.high)$answer
+ms$cil <- aggregate(answer ~ q_kind + age_cat + site, mss, ci.low)$answer
+```
+
+## barplot:
+
+x-axis: age groups
+y-axis: answer; 0 = incorrect, 1 = correct
+
+```{r}
+qplot(age_cat, answer, 
+      fill = age_cat, 
+      geom="bar", position = "dodge", stat="identity",
+      data=subset(ms, answer!="NA")) + 
+  facet_wrap(site~q_kind) +
+  geom_errorbar(aes(ymin=answer-cil,ymax=answer+cih,width=.1))
+```
+
+- more correct on play than eval overall
+- older group performs better overall (?)
+
+## histogram:
+
+```{r}
+# histogram
+qplot(age_cat, # 1 = correct
+      fill = as.factor(answer), position = "dodge", 
+      geom="histogram",
+      data=subset(d1, answer!="NA" & (q_kind == "play" | q_kind == "eval"))) + 
+      facet_grid(site~q_kind)
+```
+
+- korea and US show opposite pattern for eval? in Korea, older groups answer more correctly on eval, whereas in US, they answer more INcorrectly (i.e., given the same positive utterance from both the nice person and mean person, they say nicer person's stuff is better)
+
+# niceness rating
+
+"How nice is he/she?"
+
+```{r}
+# plot: niceness
+mss <- d1 %>%
+  filter(q_kind == "niceness") %>%
+  group_by(polite, age_cat, site, subid) %>%
+  summarize(
+    answer = mean(answer, na.rm=TRUE)
+  )
+ms <- aggregate(answer ~ polite + age_cat + site, mss, mean)
+ms$cih <- aggregate(answer ~ polite + age_cat + site, mss, ci.high)$answer
+ms$cil <- aggregate(answer ~ polite + age_cat + site, mss, ci.low)$answer
+```
+
+## barplot
+
+1 = really mean, 5 = really nice
+
+```{r}
+qplot(polite, answer, 
+      fill = polite, 
+      geom="bar", position = "dodge", stat="identity",
+      data=subset(ms, answer!="NA")) + 
+  facet_grid(site~age_cat) +
+  geom_errorbar(aes(ymin=answer-cil,ymax=answer+cih,width=.1))
+```
+
+The older group performs better: they correctly infer that the polite speaker is nicer
+
+## histogram
+
+```{r}
+# histogram
+qplot(polite,
+      fill = as.factor(answer),
+      geom="histogram", position = "dodge",
+      data=subset(d1, answer!="NA" & (q_kind == "niceness") & site != "NA")) + 
+      facet_grid(site~age_cat)
+```
+
+
+
+# listener's feeling 
+
+"How did he/she feel (after hearing the speaker's utterance)?"
+
+```{r}
+# plot: listener feeling inference
+mss <- d1 %>%
+  filter(q_kind == "Lfeel") %>%
+  group_by(polite, age_cat, site, subid) %>%
+  summarize(
+    answer = mean(answer, na.rm=TRUE)
+  )
+
+# look at correctness of responses
+mss[mss$polite == "impolite",]$answer <- (mss[mss$polite == "impolite",]$answer - 1) * (-1)
+
+ms <- aggregate(answer ~ polite + age_cat + site, mss, mean)
+ms$cih <- aggregate(answer ~ polite + age_cat + site, mss, ci.high)$answer
+ms$cil <- aggregate(answer ~ polite + age_cat + site, mss, ci.low)$answer
+```
+
+## barplot
+
+0 = incorrect, 1 = correct
+
+```{r}
+qplot(polite, answer, 
+      fill = polite, 
+      geom="bar", position = "dodge", stat="identity",
+      data=subset(ms, answer!="NA")) + 
+  facet_grid(site~age_cat) +
+  geom_errorbar(aes(ymin=answer-cil,ymax=answer+cih,width=.1)) 
+```
+
+For both sites, 5-6 year-olds all correctly infer the listener's feeling after hearing the impolite speaker's utterance ("they felt bad"), whereas more errors occur for listener's feeling upon hearing the polite speaker's utterance.
+
+Weird pattern for 3-4 year-olds: because of too small number? - probably, look at the histogram below
+
+## histogram
+
+0 = incorrect, 1 = correct
+
+```{r}
+# histogram
+# temporary data d2
+d2 <- d1
+# look at correctness of responses
+d2$answer <- as.numeric(as.character(d2$answer))
+d2[d2$polite == "impolite",]$answer <- (d2[d2$polite == "impolite",]$answer - 1) * (-1)
+
+qplot(polite,
+      fill = as.factor(answer),
+      geom="histogram", position = "dodge",
+      data=subset(d2, answer!="NA" & (q_kind == "Lfeel") & site != "NA")) + 
+      facet_grid(site~age_cat)
+```
+
+Pattern looks the same for Korea and US
+
+# niceness x listener's feeling
+
+For participants who correctly inferred listener's feeling upon hearing the utterance, did they infer the speaker's niceness better too?
+
+```{r}
+d <- read.csv("/Users/ericang/Documents/Research/Politeness/trupol_git/data_analysis/data/trupol_data.csv")
+log <- read.csv("/Users/ericang/Documents/Research/Politeness/trupol_git/data_analysis/info/trupol_subj.csv")
+
+# join with subj log
+d <- join(d, log)
+
+# select key vars 
+d <- d %>%
+  select(subid, Age, site, trial1_niceness, trial2_niceness, trial3_niceness, trial4_niceness, trial1_Lfeel_val, trial2_Lfeel_val, trial3_Lfeel_val, trial4_Lfeel_val)
+
+# categorize age
+d$Age <- as.numeric(as.character(d$Age))
+d <- cbind(d, age_cat = cut(d$Age, breaks=c(3, 4, 5, 6, 7)))
+levels(d$age_cat) <- c("3", "4", "5", "6")
+
+# reshape data
+d <- d %>%
+  gather("q", "answer", 4:11)
+
+# add columns to categorize vars
+d1 <- d %>%
+  mutate(trial = substring(q, 6, 6), q_kind = substring(q, 8, 16)) %>%
+  select(subid, site, age_cat, trial, q_kind, answer) %>%
+  spread(q_kind, answer) %>%
+  mutate(polite = factor(trial,
+                         levels = c("1", "2", "3", "4"),
+                         labels = c(
+                                    "impolite", "polite", "polite", "impolite")))
+
+d1$Lfeel_val <- as.factor(as.numeric(as.character(d1$Lfeel_val)))
+d1$niceness <- as.numeric(as.character(d1$niceness))
+d1$polite <- as.factor(as.character(d1$polite))
+d1$site <- as.factor(as.character(d1$site))
+```
+
+## dotplot
+
+```{r}
+ggplot(subset(d1, Lfeel_val != "NA" & site != "NA"), aes(x=Lfeel_val, y=niceness)) +
+  geom_jitter(position = position_jitter(height = .1, width = .3), aes(colour = niceness)) +
+  facet_grid(site~.)
+```
+
+Overall, those who thought the listener felt bad had more mixed responses about speaker's niceness, whereas those who thought the listener felt good more correctly inferred the speaker was nice. 
+
+## dotplot: facetting by politeness
+
+```{r}
+# facet by politeness
+ggplot(subset(d1, Lfeel_val != "NA" & site != "NA"), aes(x=Lfeel_val, y=niceness)) +
+  geom_jitter(position = position_jitter(height = .1, width = .3), aes(colour = niceness)) +
+  facet_grid(site~polite)
+```
+
+After an impolite speaker says something, participants correctly infer the listener's feelings, but incorrectly infers that the impolite speaker is nice. This is true for both sites.  
