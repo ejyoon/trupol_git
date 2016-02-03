@@ -1,0 +1,108 @@
+<html>
+  <head>
+    <title>Rate people's interactions</title>       
+    <script src="jquery-1.11.2.min.js"></script>
+    <script src="mmturkey-0.6.js"></script>
+    <link rel="stylesheet" href="style.css" /> <!--calling css file for style-->
+    <meta name="exp0" content="initial-scale=1.0" /> 
+  </head>
+
+  <body>
+  
+    <div class="slide" id="instructions"> <!--Make sure class and id are specified, these are kinds of names that Javascript identifies each section; 'div function section-izes each part that you want to be considered separately-->
+  <img src="images/stanford.png" alt="Stanford University">
+  <p id='logo-text'>Stanford Language and Cognition Lab</p>
+  <p class="block-text">In this experiment, you will read interactions between people. Your job is to judge what their actions or comments mean. You will see something they did or said, and a possible interpretation of that. Then you will be asked to indicate how likely it is that the interpretation is true.
+  </p>
+      
+      <button type="button" onClick="this.blur(); experiment.initial0()">Start</button> <!-- This puts a button with text 'Start', which upon participant's click carries out the functions this.blur() and experiment.initial1(), which is specified in js scripts in var experiment and next: function-->
+    
+  <p class="block-text"><br> <b> Note: you won't be able to preview this HIT before accepting it because it's so short. </b></p>
+  
+  <p class="block-text" id="legal">By answering the
+  following questions, you are participating in a study being performed by
+  cognitive scientists in the Stanford Department of Psychology. If you have
+  questions about this research, please contact us at 
+  <a href="mailto://languagecoglab@gmail.com.">languagecoglab@gmail.com</a>.
+  You must be  at least 18 years old to participate. Your participation in 
+  this research is voluntary. You may decline to answer any or all of the 
+  following questions. You may decline further participation, at any time, 
+  without adverse consequences. Your anonymity is assured; the researchers 
+  who have requested your participation will not receive any personal information 
+  about you. Note however that we have recently been made aware that your public 
+  Amazon.com profile can be accessed via your worker ID if you do not choose 
+  to opt out. If you would like to opt out of this feature, you may follow instructions available 
+  <a href="http://www.amazon.com/gp/help/customer/display.html?nodeId=16465241">here</a>.</p>
+</div>
+
+      
+<script LANGUAGE="JavaScript">
+
+    
+    function checkPreview() {
+    if (turk.previewMode) {
+        alert ("Please accept this HIT to see more questions.");
+        return false;
+    }
+    return true;
+}
+
+    </script>
+
+      
+    <div class="slide" id="initial0">
+      <div id="image0"></div> <!--dynamically built in javascript-->
+      <div id="description0"></div> <!--dynamically built in javascript-->
+      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.initial1()">Next</button> </td> </tr>
+      </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
+  	  </table>
+      <p class="additional"> Click 'Next' to see what happens next. </p>
+    </div>
+
+
+    <div class="slide" id="initial1">
+      <div id="image1"></div> <!--dynamically built in javascript-->
+      <div id="description1"> </div> <!--dynamically built in javascript-->
+      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.initial2()">Next</button> </td> </tr>
+      </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
+		  </table>
+      <p class = "additional"> Click 'Next' to see what happens next. </p>
+    </div>
+    
+    <div class="slide" id="initial2">
+      <div id="image2"></div> <!--dynamically built in javascript-->
+      <div id="description2"> </div> <!--dynamically built in javascript-->
+      <div id="remember1"> </div> <!--dynamically built in javascript-->
+      <div id="message_remember"> </div> <!--dynamically built in javascript-->
+      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.initial3()">Next</button> </td> </tr>
+      </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
+  	  </table>
+      <p class="additional"> Click 'Next' to see what happens next. </p>
+    </div>    
+
+    <div class="slide" id="initial3">
+      <div id="image3"></div> <!--dynamically built in javascript-->
+      <div id="description3"> </div> <!--dynamically built in javascript-->
+      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.next()">Next</button> </td> </tr>
+      </td></tr><tr><td align="right"><div id = "counter"></div> </td> </tr>
+      </table>
+      <p class="additional"> Click 'Next' to see what happens next. </p>
+    </div>
+
+    <div class="slide" id="stage">
+      <div id="image"></div> <!--dynamically built in javascript-->
+      <div id="labelInst"> </div> <!--dynamically built in javascript-->
+      <div id="message"> </div> <!--dynamically built in javascript-->
+      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.select()">Next</button> </td> </tr>
+    	</td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
+		  </table>
+    </div>
+
+    <div class="slide" id="finished">
+      You're finished - thanks for participating! Submitting to Mechanical Turk...
+      <div id="vars"> </div> <!--dynamically built in javascript-->
+    </div>
+
+<script src="trupol.js"></script>    
+</body>
+</html>
