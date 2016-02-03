@@ -85,9 +85,9 @@ if(targ == 0) {
 var images = new Array() 
 for (i=0;i<25;i++) {//loop through images you want to use
     images[i] = new Image()
-    images[i].src =  "slides/expt1.0" + i + ".png"
+    images[i].src =  "slides/expt1.0" + i + ".jpeg"
     images[i] = new Image()
-    images[i].src =  "slides/cont1.0" + i + ".png"
+    images[i].src =  "slides/cont1.0" + i + ".jpeg"
 
 } 
 showSlide("instructions");
@@ -103,7 +103,15 @@ var experiment = { // end, next, select
   instructions:function() {
     showSlide('instructions2')
   },
+
     
+    story: function() {
+        showSlide('slide001');
+    
+        var image001_html = '<table align="center"><tr><td align="center"><img style="display:block;" width="60%" height="60%" src="slides/expt1.001.jpeg" alt="slides/expt1.001.jpeg" /></td></tr></table>'
+			$("#image001").html(image001_html); //insert dynamically-built html code into html file; 
+
+    },
     // INITIAL0 function
   initial0:function() {
     showSlide('initial0')
