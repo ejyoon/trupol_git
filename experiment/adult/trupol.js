@@ -34,7 +34,7 @@ function random(a,b) {
 // ---------------- PARAMETERS ------------------
 // *** Maker getter function***
 // substitution for picking a random cond for now:
-var filename = "EY_IL0"
+var filename = "EJY_trupol"
 var condCounts = "1,20;2,20;" //Example: "cond1,#of ppl20;2,20;3,20" EDIT
 var xmlHttp = null;
 xmlHttp = new XMLHttpRequest(); 
@@ -83,11 +83,11 @@ if(targ == 0) {
 //PRE-LOAD IMAGES
 // By creating image object and setting source, images preload
 var images = new Array() 
-for (i=0;i<2;i++) {//loop through images you want to use
+for (i=0;i<25;i++) {//loop through images you want to use
     images[i] = new Image()
-    images[i].src =  "objects/" + container[i] + numItem[i] + ".png"
+    images[i].src =  "slides/expt1.0" + i + ".png"
     images[i] = new Image()
-    images[i].src =  "objects/" + container[i] + numItem[i] + "_closed.png"
+    images[i].src =  "slides/cont1.0" + i + ".png"
 
 } 
 showSlide("instructions");
@@ -99,6 +99,10 @@ var experiment = { // end, next, select
     target_item: item_word,
     container: container_word,
     experiment: "ignorance",
+
+  instructions:function() {
+    showSlide('instructions2')
+  },
     
     // INITIAL0 function
   initial0:function() {
