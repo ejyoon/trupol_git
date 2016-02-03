@@ -1,0 +1,132 @@
+---
+title: "trupol India data"
+author: "Erica Yoon"
+date: "Jan 10, 2016"
+output: html_document
+---
+```{r}
+# trupol_ana_preprocess
+
+rm(list=ls())
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(tidyr)
+source("/Users/ericang/Documents/Research/trupol/data/version 1/helper/useful.R")
+
+d <- read.csv("/Users/ericang/Documents/Research/trupol/data/version 2/india/trupol_coding.csv")
+# log <- read.csv("/Users/ericang/Documents/Research/Politeness/trupol_git/data_analysis/info/trupol_subj.csv")
+# 
+# # join with subj log
+# d <- join(d, log)
+
+# select key vars 
+d <- d %>%
+  select(subid, site, age, cond, trial1_2_eval, trial1_2_play, trial3_4_play, trial3_4_eval, trial1_nice, trial2_nice, trial3_nice, trial4_nice, trial1_mean, trial2_mean, trial3_mean, trial4_mean, trial1_truth, trial2_truth, trial3_truth, trial4_truth)
+
+# # categorize age
+# d$Age <- as.numeric(as.character(d$Age))
+# d <- cbind(d, age_cat = cut(d$Age, breaks=c(3, 5, 7, 9)))
+# levels(d$age_cat) <- c("3-4", "5-6", "7-8")
+# summary(d$age_cat)
+
+# reshape data
+d <- d %>%
+  gather("q", "answer", 5:20)
+
+# add columns to categorize vars
+d1 <- d %>%
+  mutate(polite = factor(substring(q, 1, 8),
+                         levels = c("trial1_2", "trial3_4", 
+                                    "trial1_n", "trial2_n", "trial3_n", "trial4_n",
+                                    "trial1_m", "trial2_m", "trial3_m", "trial4_m",
+                                    "trial1_t", "trial2_t", "trial3_t", "trial4_t"),
+                         labels = c("NA", "NA",
+                                    "honest", "polite", "polite", "honest",
+                                    "honest", "polite", "polite", "honest",
+                                    "honest", "polite", "polite", "honest")),
+         q_kind = factor(substring(q, 8, 10),
+                         levels = c("2_e", "2_p", "4_p", "4_e",
+                                    "nic", "mea", "tru"),
+                         labels = c("eval", "play", "play", "eval",
+                                    "niceness", "meanness", "truth-telling")))
+d1$age <- as.factor(as.character(d1$age))
+d1$polite <- as.factor(as.character(d1$polite))
+d1$q_kind <- as.factor(as.character(d1$q_kind))
+d1$answer <- as.factor(as.character(d1$answer))
+levels(d1$answer) <- c("1", "1", "0", "0", "0", "1") # honest coded as '1'
+d1$answer <- as.numeric(as.character(d1$answer))
+
+```
+
+# correct responses on eval and play questions
+
+play: "who do you want to play with?"
+eval: "whose snack do you think is tastier (given the same utterance)?"
+
+```{r}
+# plot: eval and play
+mss <- d1 %>%
+  filter(q_kind == "play" | q_kind == "eval") %>%
+  group_by(age, cond, q_kind, subid) %>%
+  summarize(
+    answer = mean(answer, na.rm=TRUE)
+  )
+ms <- aggregate(answer ~ age + cond + q_kind, mss, mean)
+ms$cih <- aggregate(answer ~ age + cond + q_kind, mss, ci.high)$answer
+ms$cil <- aggregate(answer ~ age + cond + q_kind, mss, ci.low)$answer
+```
+
+
+## barplot:
+
+x-axis: age groups
+y-axis: answer; 0 = incorrect, 1 = correct
+
+```{r}
+levels(ms$cond) <- c("control", "experimental")
+
+p <- ggplot(ms, aes(x=q_kind, y=answer, fill=q_kind))
+p + 
+  geom_bar(position = "dodge", stat = "identity") +
+  geom_errorbar(aes(ymin=answer-cil,ymax=answer+cih,width=.1)) +
+  facet_grid(cond~age) +
+  ggtitle("Proportion saying 'honest speaker' on eval & play questions")
+```
+
+Notice how the pattern is OPPOSITE to what we saw in Korea; children prefer to play with honest speaker even in the experimental condition, in which the honest speaker is being impolite. On the other hand, for eval question (*which is different from one we had asked before. This eval question is: "If Eshan baked another cookie, who would he ask?"), more children tended to answer that the protagonist will ask the polite speaker.
+
+# nice/mean/truth-telling rating
+
+```{r}
+# plot: niceness
+mss <- d1 %>%
+  filter(q_kind == "niceness" | q_kind == "meanness" | q_kind == "truth-telling") %>%
+  group_by(age, cond, polite, q_kind, subid) %>%
+  summarize(
+    answer = mean(answer, na.rm=TRUE)
+  )
+ms <- aggregate(answer ~ age + cond + polite + q_kind, mss, mean)
+ms$cih <- aggregate(answer ~ age + cond + polite + q_kind, mss, ci.high)$answer
+ms$cil <- aggregate(answer ~ age + cond + polite + q_kind, mss, ci.low)$answer
+```
+
+## barplot
+
+```{r}
+levels(ms$cond) <- c("control", "experimental")
+p <- ggplot(subset(ms, answer!="NA"), 
+            aes(x=cond, y=answer, fill=polite))
+p + 
+  geom_bar(position=position_dodge(), stat = "identity") +
+  facet_grid(q_kind~age) +
+  geom_errorbar(position=position_dodge(.9), aes(ymin=answer-cil,ymax=answer+cih,width=.1)) +
+  ggtitle("Proportion \"yes\"")
+```
+
+Both age groups correctly said the honest speaker was telling the truth, whereas the dishonest speaker was not.
+
+8-year-olds said dishonest speaker is less mean and nicer when he/she is being polite compared to when he/she is lying with no reason, whereas 6-year-olds did not differentiate between the two situations. 
+
+For both age groups, but especially 6-year-olds interestingly, there was numerical difference which suggests the honest speaker was considered to be more mean and less nice when he/she was being impolite.
+

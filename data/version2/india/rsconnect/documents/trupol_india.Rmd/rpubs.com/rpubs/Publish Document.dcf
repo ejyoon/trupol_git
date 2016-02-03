@@ -1,0 +1,7 @@
+name: Publish Document
+account: rpubs
+server: rpubs.com
+bundleId:
+        https://api.rpubs.com/api/v1/document/142567/b7bad193a886415db9cd63a1b6168c8d
+url: http://rpubs.com/ejyoon/142567
+when: 1452617409.21898
