@@ -107,41 +107,6 @@ xmlHttp.send( null );
 var cond = random(2)+1; // (1-6) For testing only (before running actual)
 
 
-// get condition values (0=simple; 1= complex)
-if (cond == 1) {
-    targ = 0;
-    condName = 'item = 1'
-} else if (cond == 2) {
-    targ = 1;
-   	condName = 'item = 2'
-}
-
-// --IMAGES--
-var allcontainers = [["R", "G", "B"]]
-var shuffled_allcontainers = shuffle(allcontainers)
-var container_list = shuffled_allcontainers[0]
-var shuffled_container_list = shuffle(container_list)
-var container = shuffled_container_list
-
-var numItem_list = [1, 2, 3]
-var shuffled_numItem_list = shuffle(numItem_list)
-var numItem = shuffled_numItem_list
-
-// --WORDS--
-var allwords = [[["lunchbox", "lunchboxes"], ["an orange", "an apple"]]] // later we can add more words to this
-var shuffled_allwords = shuffle(allwords)
-var container_word = shuffled_allwords[0][0][0]
-var container_plural = shuffled_allwords[0][0][1]
-var item_word_list = allwords[0][1]
-var item_word = []
-
-if(targ == 0) {
-  item_word = item_word_list[0]
-} else if(targ == 1) {
-  item_word = item_word_list[1]
-}
-
-
 // ---------------- CONTROL FLOW ------------------
 //PRE-LOAD IMAGES
 // By creating image object and setting source, images preload
@@ -161,12 +126,29 @@ showSlide("instructions");
 
 // MAIN EXPERIMENT
 var experiment = { // end, next, select
-    crit: [],
-    condition: cond,
-    target_item: item_word,
-    container: container_word,
-    experiment: "ignorance",
-
+    
+    data:{
+    site: "US", //fixme for other sites
+    experiment: "trupol",
+    cond: "FIXME", // randomize exp and cont
+    order: "FIXME", // randomize 1 and 2
+    age: "adult",
+//    practice1_nice: [],
+//    practice1_mean: [],
+//    practice2_nice: [],
+//    practice2_mean: [],
+//    practice3_truth: [],
+//    practice3_lie: [],
+    trial1_comp_like: [],
+    trial1_comp_tell: [],
+    trial1_SWhy: [],
+    trial1_LFeel: [],
+    trial1_nice: [],
+    trial1_mean: [],
+    trial1_truth: [],
+    trial1_2_play: [],   
+    },
+    
   instructions:function() {
     showSlide('instructions2')
   },
@@ -194,14 +176,10 @@ var experiment = { // end, next, select
         var image003_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/expt1.003.jpeg" alt="slides/expt1.003.jpeg" /></td></tr></table>'
         $("#image003").html(image003_html); //insert dynamically-built html code into html file; 
         $("#comp_check1").html("Did Sally like the cookie?"); // FIXME: Sally and cookie as variables so that they can change depending on condition
-},
+    },
     
     slide004: function() {
-//      var comp_check1 = getRadioCheckedValue(1, "cc1judgment");
-//        if(comp_check1 == 1) {         $("#message_error").html('<font color="red">Your answer is incorrect! Try again.</font>');        
-//} else if(comp_check1 == 0) {
-//    showSlide("slide004")
-//};
+        var comp_check1 = getRadioCheckedValue(0, "cc1judgment");
         showSlide('slide004');
         var image004_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/expt1.004.jpeg" alt="slides/expt1.004.jpeg" /></td></tr></table>'
 			$("#image004").html(image004_html); //insert dynamically-built html code into html file; 
@@ -215,6 +193,7 @@ var experiment = { // end, next, select
 //} else if(comp_check1 == 0) {
 //    showSlide("slide004")
 //};
+        var comp_check2 = getRadioCheckedValue(1, "cc2judgment");
         showSlide('slide005');
         var image005_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/expt1.005.jpeg" alt="slides/expt1.005.jpeg" /></td></tr></table>'
 			$("#image005").html(image005_html); //insert dynamically-built html code into html file; 
@@ -256,7 +235,7 @@ var experiment = { // end, next, select
             xmlHttp.open("GET", "http://langcog.stanford.edu/cgi-bin/subject_equalizer/decrementer.php?filename=" + filename + "&to_decrement=" + cond, false);
             xmlHttp.send(null);
 
-            turk.submit(experiment);
+            turk.submit(experiment.data);
         }, 1500); //function() - anonymous function
     },
 }
