@@ -213,7 +213,11 @@ var experiment = { // end, next, select
 //} else if(comp_check1 == 0) {
 //    showSlide("slide004")
 //};
-        showSlide('slide011');
+        var pretest1 = document.getElementById("pretest1").value;
+        experiment.data.trial1_SWhy.push(pretest1);        
+        var pretest2 = document.getElementById("pretest2").value;
+        experiment.data.trial1_LFeel.push(pretest2);        
+       showSlide('slide011');
         var image011_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/expt1.011.jpeg" alt="slides/expt1.011.jpeg" /></td></tr></table>'
 			$("#image011").html(image011_html); //insert dynamically-built html code into html file; 
             $("#compare1").html("Who do you want to play with more?"); // FIXME: counterbalance niceness, meanness and truth-telling
