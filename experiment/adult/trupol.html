@@ -38,6 +38,33 @@
       
 <script LANGUAGE="JavaScript">
 
+    function ValidateForm(form){
+    var valid = 0;
+    for(var i = 0; i < form.elements.length; i++) {
+        if (form.elements[i].checked == true ) { 
+            valid = 1; 
+            return true;
+        } 
+    } 
+    if (valid == 0) {
+        alert ( "Please answer this question." );
+        return false; 
+    }
+};
+    
+    function ValidateText(field)
+    {
+        valid = true;
+
+        if (field.value == "" )
+        {
+            alert ("Please answer all the questions.");
+            valid = false;
+        }
+
+        return valid;
+    };
+
     
     function checkPreview() {
     if (turk.previewMode) {
@@ -45,7 +72,7 @@
         return false;
     }
     return true;
-}
+};
 
     </script>
 
@@ -90,22 +117,9 @@
           </tr>
         </table>
         </form>
-<!--
-        <table align = "center"><tr>
-        <td align="center">
-          <tr>
-            <td>   </td>
-            <td>Yes</td>
-            <td>No</td>    
-          </tr>
-          <tr>            
-            <td>Did Sally like the cookie?</td>
-            <td align="center"><input type="radio" name="comp_check1" value = "1"></td>
-            <td align="center"><input type="radio" name="comp_check1" value = "0"></td>
-          </tr>
-        </table>
--->
-      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.slide004()">Next</button> </td> </tr>
+
+        <table align="center"><tr><td> <button type="button" onClick="this.blur(); if
+    (ValidateForm(document.comp_check1)) {experiment.slide004()}">Next</button> </td> </tr>
       </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
   	  </table>
       <p class="additional"> Click 'Next' to read the next part of the story. </p>
@@ -129,7 +143,8 @@
           </tr>
         </table>
         </form>
-      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.slide005()">Next</button> </td> </tr>
+      <table align="center"><tr><td> <button type="button" onClick="this.blur(); if
+    (ValidateForm(document.comp_check2)) {experiment.slide005()}">Next</button> </td> </tr>
       </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
   	  </table>
       <p class="additional"> Click 'Next' to read the next part of the story. </p>
@@ -157,22 +172,23 @@
           </tr>
           <tr>            
             <td>Was Sally nice?</td>
-            <td align="center"><input type="radio" name="test1judgment" value = "1"></td>
-            <td align="center"><input type="radio" name="test1judgment" value = "0"></td>
+            <td align="center"><input type="radio" name="test1nice" value = "1"></td>
+            <td align="center"><input type="radio" name="test1nice" value = "0"></td>
           </tr>
           <tr>            
             <td>Was Sally mean?</td>
-            <td align="center"><input type="radio" name="test1judgment" value = "1"></td>
-            <td align="center"><input type="radio" name="test1judgment" value = "0"></td>
+            <td align="center"><input type="radio" name="test1mean" value = "1"></td>
+            <td align="center"><input type="radio" name="test1mean" value = "0"></td>
           </tr>
           <tr>            
             <td>Was Sally telling the truth?</td>
-            <td align="center"><input type="radio" name="test1judgment" value = "1"></td>
-            <td align="center"><input type="radio" name="test1judgment" value = "0"></td>
+            <td align="center"><input type="radio" name="test1truth" value = "1"></td>
+            <td align="center"><input type="radio" name="test1truth" value = "0"></td>
           </tr>
         </table>
         </form>
-      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.slide011()">Next</button> </td> </tr>
+      <table align="center"><tr><td> <button type="button" onClick="this.blur(); if
+    (ValidateText(document.pretest1) && ValidateText(document.pretest2) && ValidateForm(document.test1)) {experiment.slide011()}">Next</button> </td> </tr>
       </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
   	  </table>
       <p class="additional"> Click 'Next' to read the next part of the story. </p>
@@ -200,7 +216,7 @@
           <input type="text" name="compare1_why"><br>
         </form>       
         <br>
-      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.end()">Next</button> </td> </tr>
+      <table align="center"><tr><td> <button type="button" onClick="this.blur(); if ( ValidateText(document.compare1_why) && ValidateForm(document.compare1)) { experiment.end()}">Next</button> </td> </tr>
       </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
   	  </table>
     </div>

@@ -180,6 +180,7 @@ var experiment = { // end, next, select
     
     slide004: function() {
         var comp_check1 = getRadioCheckedValue(0, "cc1judgment");
+        experiment.data.trial1_comp_like.push(comp_check1);
         showSlide('slide004');
         var image004_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/expt1.004.jpeg" alt="slides/expt1.004.jpeg" /></td></tr></table>'
 			$("#image004").html(image004_html); //insert dynamically-built html code into html file; 
@@ -194,6 +195,7 @@ var experiment = { // end, next, select
 //    showSlide("slide004")
 //};
         var comp_check2 = getRadioCheckedValue(1, "cc2judgment");
+        experiment.data.trial1_comp_tell.push(comp_check2);
         showSlide('slide005');
         var image005_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/expt1.005.jpeg" alt="slides/expt1.005.jpeg" /></td></tr></table>'
 			$("#image005").html(image005_html); //insert dynamically-built html code into html file; 
