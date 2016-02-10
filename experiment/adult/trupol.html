@@ -200,84 +200,9 @@
           <input type="text" name="compare1_why"><br>
         </form>       
         <br>
-         <p id="compare2" align="center"></p>
-        <form name="compare2">
-        <table align = "center"><tr>
-        <td align="center">
-          <tr>
-            <td>Sally</td>
-            <td>   </td>
-            <td>Mary</td>    
-          </tr>
-            <td align="center"><input type="radio" name="compare2judgment" value = "honest"></td>
-            <td>   </td>
-            <td align="center"><input type="radio" name="compare2judgment" value = "polite"></td>
-          </tr>
-        </table>
-        </form>
-        <p id="compare2_why" align="center">Why?</p>
-        <form name="compare2_why" align="center">
-          <input type="text" name="compare2_why"><br>
-        </form>   
-        <br>
-       <p id="compare3" align="center"></p>
-        <form name="compare3">
-        <table align = "center"><tr>
-        <td align="center">
-          <tr>
-            <td>Sally</td>
-            <td>   </td>
-            <td>Mary</td>    
-          </tr>
-            <td align="center"><input type="radio" name="compare3judgment" value = "honest"></td>
-            <td>   </td>
-            <td align="center"><input type="radio" name="compare3judgment" value = "polite"></td>
-          </tr>
-        </table>
-        </form>
-        <p id="compare3_why" align="center">Why?</p>
-        <form name="compare3_why" align="center">
-          <input type="text" name="compare3_why"><br>
-        </form>       
-</div>
-
-    <div class="slide" id="initial1">
-      <div id="image1"></div> <!--dynamically built in javascript-->
-      <div id="description1"> </div> <!--dynamically built in javascript-->
-      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.initial2()">Next</button> </td> </tr>
-      </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
-		  </table>
-      <p class = "additional"> Click 'Next' to see what happens next. </p>
-    </div>
-    
-    <div class="slide" id="initial2">
-      <div id="image2"></div> <!--dynamically built in javascript-->
-      <div id="description2"> </div> <!--dynamically built in javascript-->
-      <div id="remember1"> </div> <!--dynamically built in javascript-->
-      <div id="message_remember"> </div> <!--dynamically built in javascript-->
-      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.initial3()">Next</button> </td> </tr>
+      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.end()">Next</button> </td> </tr>
       </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
   	  </table>
-      <p class="additional"> Click 'Next' to see what happens next. </p>
-    </div>    
-
-    <div class="slide" id="initial3">
-      <div id="image3"></div> <!--dynamically built in javascript-->
-      <div id="description3"> </div> <!--dynamically built in javascript-->
-      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.next()">Next</button> </td> </tr>
-      </td></tr><tr><td align="right"><div id = "counter"></div> </td> </tr>
-      </table>
-      <p class="additional"> Click 'Next' to see what happens next. </p>
-      <div id="message_error"> </div>
-    </div>
-
-    <div class="slide" id="stage">
-      <div id="image"></div> <!--dynamically built in javascript-->
-      <div id="labelInst"> </div> <!--dynamically built in javascript-->
-      <div id="message"> </div> <!--dynamically built in javascript-->
-      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.select()">Next</button> </td> </tr>
-    	</td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
-		  </table>
     </div>
 
     <div class="slide" id="finished">
