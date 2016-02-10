@@ -31,6 +31,69 @@ function random(a,b) {
   }
 }
 
+function clearForm(oForm) {
+  var sliderVar = "";
+  for(var i=0; i<NUM_SLIDERS; i++)
+  {
+    sliderVar = "#slider" + i;
+    $(sliderVar).slider("value", 20);
+    $(sliderVar).css({"background":"#FFFFFF"});
+    $(sliderVar + " .ui-slider-handle").css({
+        "background":"#FAFAFA",
+        "border-color": "#CCCCCC" });
+    sliderVar = "slider" + i;
+    document.getElementById(sliderVar).style.background = "";
+  }
+  
+  var elements = oForm.elements; 
+  
+  oForm.reset();
+
+  for(var i=0; i<elements.length; i++) {
+    field_type = elements[i].type.toLowerCase();
+    switch(field_type) {
+    
+      case "text": 
+      case "password": 
+      case "textarea":
+            case "hidden":	
+        
+        elements[i].value = ""; 
+        break;
+          
+      case "radio":
+      case "checkbox":
+          if (elements[i].checked) {
+            elements[i].checked = false; 
+        }
+        break;
+  
+      case "select-one":
+      case "select-multi":
+                  elements[i].selectedIndex = -1;
+        break;
+  
+      default: 
+        break;
+    }
+  }
+}
+
+function getRadioCheckedValue(formNum, radio_name)
+{
+   var oRadio = document.forms[formNum].elements[radio_name];
+   for(var i = 0; i < oRadio.length; i++)
+   {
+      if(oRadio[i].checked)
+      {
+         return oRadio[i].value;
+      }
+   }
+   return '';
+}
+
+
+
 // ---------------- PARAMETERS ------------------
 // *** Maker getter function***
 // substitution for picking a random cond for now:
@@ -86,8 +149,10 @@ var images = new Array()
 for (i=0;i<25;i++) {//loop through images you want to use
     images[i] = new Image()
     images[i].src =  "slides/expt1.0" + i + ".jpeg"
+    images[i].src =  "slides/expt1.00" + i + ".jpeg"
     images[i] = new Image()
     images[i].src =  "slides/cont1.0" + i + ".jpeg"
+    images[i].src =  "slides/cont1.00" + i + ".jpeg"
 
 } 
 showSlide("instructions");
@@ -105,13 +170,75 @@ var experiment = { // end, next, select
   },
 
     
-    story: function() {
+    slide001: function() {
         showSlide('slide001');
     
         var image001_html = '<table align="center"><tr><td align="center"><img style="display:block;" width="60%" height="60%" src="slides/expt1.001.jpeg" alt="slides/expt1.001.jpeg" /></td></tr></table>'
 			$("#image001").html(image001_html); //insert dynamically-built html code into html file; 
 
     },
+    
+    slide002: function() {
+        showSlide('slide002');
+    
+        var image002_html = '<table align="center"><tr><td align="center"><img style="display:block;" width="60%" height="60%" src="slides/expt1.002.jpeg" alt="slides/expt1.002.jpeg" /></td></tr></table>'
+			$("#image002").html(image002_html); //insert dynamically-built html code into html file; 
+
+    },
+    
+    slide003: function() {
+        showSlide('slide003');
+    
+        var image003_html = '<table align="center"><tr><td align="center"><img style="display:block;" width="60%" height="60%" src="slides/expt1.003.jpeg" alt="slides/expt1.003.jpeg" /></td></tr></table>'
+        $("#image003").html(image003_html); //insert dynamically-built html code into html file; 
+        $("#comp_check1").html("Did Sally like the cookie?"); // FIXME: Sally and cookie as variables so that they can change depending on condition
+},
+    
+    slide004: function() {
+//      var comp_check1 = getRadioCheckedValue(1, "cc1judgment");
+//        if(comp_check1 == 1) {         $("#message_error").html('<font color="red">Your answer is incorrect! Try again.</font>');        
+//} else if(comp_check1 == 0) {
+//    showSlide("slide004")
+//};
+        showSlide('slide004');
+        var image004_html = '<table align="center"><tr><td align="center"><img style="display:block;" width="60%" height="60%" src="slides/expt1.004.jpeg" alt="slides/expt1.004.jpeg" /></td></tr></table>'
+			$("#image004").html(image004_html); //insert dynamically-built html code into html file; 
+            $("#comp_check2").html("What did Sally say to Edward?"); // FIXME: Sally and cookie as variables so that they can change depending on condition
+
+    },
+    
+    slide005: function() {
+//      var comp_check1 = getRadioCheckedValue(1, "cc1judgment");
+//        if(comp_check1 == 1) {         $("#message_error").html('<font color="red">Your answer is incorrect! Try again.</font>');        
+//} else if(comp_check1 == 0) {
+//    showSlide("slide004")
+//};
+        showSlide('slide005');
+        var image005_html = '<table align="center"><tr><td align="center"><img style="display:block;" width="60%" height="60%" src="slides/expt1.005.jpeg" alt="slides/expt1.005.jpeg" /></td></tr></table>'
+			$("#image005").html(image005_html); //insert dynamically-built html code into html file; 
+            $("#pretest1").html("Why did Sally say that to Edward?"); // FIXME
+            $("#pretest2").html("How did Edward feel?"); // FIXME
+            $("#test1").html("Was Sally nice?"); // FIXME: counterbalance niceness, meanness and truth-telling
+            $("#test2").html("Was Sally mean?"); // FIXME: counterbalance niceness, meanness and truth-telling
+            $("#test3").html("Was Sally telling the truth?"); // FIXME: counterbalance niceness, meanness and truth-telling
+
+    },
+
+    slide011: function() {
+//      var comp_check1 = getRadioCheckedValue(1, "cc1judgment");
+//        if(comp_check1 == 1) {         $("#message_error").html('<font color="red">Your answer is incorrect! Try again.</font>');        
+//} else if(comp_check1 == 0) {
+//    showSlide("slide004")
+//};
+        showSlide('slide011');
+        var image011_html = '<table align="center"><tr><td align="center"><img style="display:block;" width="60%" height="60%" src="slides/expt1.011.jpeg" alt="slides/expt1.011.jpeg" /></td></tr></table>'
+			$("#image011").html(image011_html); //insert dynamically-built html code into html file; 
+            $("#compare1").html("Who do you want to play with more?"); // FIXME: counterbalance niceness, meanness and truth-telling
+            $("#compare2").html("If you baked a cookie, who do you want to ask about your cookie?"); // FIXME: counterbalance niceness, meanness and truth-telling
+            $("#compare3").html("If Edward baked another cookie, who do you think he will ask about his new cookie?"); // FIXME: counterbalance niceness, meanness and truth-telling
+
+    },
+
     // INITIAL0 function
   initial0:function() {
     showSlide('initial0')
@@ -159,6 +286,8 @@ var experiment = { // end, next, select
 			$("#image1").html(image1_html); //insert dynamically-built html code into html file; 
     
   },
+    
+    
   
     // INITIAL2 function
   initial2:function() {

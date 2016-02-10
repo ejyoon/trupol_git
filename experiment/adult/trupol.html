@@ -50,8 +50,8 @@
     </script>
 
     <div class="slide" id="instructions2">
-        <br><br><p class="block-text"> In this task, you will read a children's story, and will be asked to think about the characters in the story. Please tell us what YOU think about these characters (not what a child would think!) </p>
-        <br><table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.story()">Next</button> </td> </tr>
+        <br><br><p class="block-text"> In this task, you will read a children's story, and will be asked to think about the characters in the story. Please tell us what YOU think about these characters (not what another person or a child would think!) </p>
+        <br><table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.slide001()">Next</button> </td> </tr>
       </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
   	  </table>
       <p class="additional"> Click 'Next' to see what read the story. </p>
@@ -59,12 +59,187 @@
       
     <div class="slide" id="slide001">
       <div id="image001"></div> <!--dynamically built in javascript-->
-      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.initial1()">Next</button> </td> </tr>
+      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.slide002()">Next</button> </td> </tr>
       </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
   	  </table>
       <p class="additional"> Click 'Next' to read the next part of the story. </p>
     </div>
 
+    <div class="slide" id="slide002">
+      <div id="image002"></div> <!--dynamically built in javascript-->
+      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.slide003()">Next</button> </td> </tr>
+      </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
+  	  </table>
+      <p class="additional"> Click 'Next' to read the next part of the story. </p>
+    </div>
+
+    <div class="slide" id="slide003">
+      <div id="image003"></div> <!--dynamically built in javascript-->
+        <p id="comp_check1" align="center"></p>
+        <form name="comp_check1">
+        <table align = "center"><tr>
+        <td align="center">
+          <tr>
+            <td>Yes</td>
+            <td>   </td>
+            <td>No</td>    
+          </tr>
+            <td><input type="radio" name="cc1judgment" value = "1"></td>
+            <td>   </td>
+            <td><input type="radio" name="cc1judgment" value = "0"></td>
+          </tr>
+        </table>
+        </form>
+<!--
+        <table align = "center"><tr>
+        <td align="center">
+          <tr>
+            <td>   </td>
+            <td>Yes</td>
+            <td>No</td>    
+          </tr>
+          <tr>            
+            <td>Did Sally like the cookie?</td>
+            <td align="center"><input type="radio" name="comp_check1" value = "1"></td>
+            <td align="center"><input type="radio" name="comp_check1" value = "0"></td>
+          </tr>
+        </table>
+-->
+      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.slide004()">Next</button> </td> </tr>
+      </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
+  	  </table>
+      <p class="additional"> Click 'Next' to read the next part of the story. </p>
+    </div>
+
+
+    <div class="slide" id="slide004">
+      <div id="image004"></div> <!--dynamically built in javascript-->
+        <p id="comp_check2" align="center"></p>
+        <form name="comp_check2">
+        <table align = "center"><tr>
+        <td align="center">
+          <tr>
+            <td>"Your cookie was tasty."</td>
+            <td>   </td>
+            <td>"Your cookie was yucky."</td>    
+          </tr>
+            <td align="center"><input type="radio" name="cc2judgment" value = "0"></td>
+            <td>   </td>
+            <td align="center"><input type="radio" name="cc2judgment" value = "1"></td>
+          </tr>
+        </table>
+        </form>
+      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.slide005()">Next</button> </td> </tr>
+      </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
+  	  </table>
+      <p class="additional"> Click 'Next' to read the next part of the story. </p>
+    </div>
+
+    <div class="slide" id="slide005">
+      <div id="image005"></div> <!--dynamically built in javascript-->
+        <p id="pretest1" align="center"></p>
+        <form name="pretest1" align="center">
+          <input type="text" name="pretest1"><br>
+        </form>
+        <p id="pretest2" align="center"></p>
+        <form name="pretest2"  align="center">
+          <input type="text" name="pretest2"><br>
+        </form>
+        <br>
+<!--        <p id="test1" align="center"></p>-->
+        <form name="test1">
+        <table align = "center"><tr>
+        <td align="center">
+          <tr>
+            <td>   </td>
+            <td>Yes</td>
+            <td>No</td>    
+          </tr>
+          <tr>            
+            <td>Was Sally nice?</td>
+            <td align="center"><input type="radio" name="test1judgment" value = "1"></td>
+            <td align="center"><input type="radio" name="test1judgment" value = "0"></td>
+          </tr>
+          <tr>            
+            <td>Was Sally mean?</td>
+            <td align="center"><input type="radio" name="test1judgment" value = "1"></td>
+            <td align="center"><input type="radio" name="test1judgment" value = "0"></td>
+          </tr>
+          <tr>            
+            <td>Was Sally telling the truth?</td>
+            <td align="center"><input type="radio" name="test1judgment" value = "1"></td>
+            <td align="center"><input type="radio" name="test1judgment" value = "0"></td>
+          </tr>
+        </table>
+        </form>
+      <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.slide011()">Next</button> </td> </tr>
+      </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
+  	  </table>
+      <p class="additional"> Click 'Next' to read the next part of the story. </p>
+    </div>
+
+     <div class="slide" id="slide011">
+      <div id="image011"></div> <!--dynamically built in javascript-->
+       <p id="compare1" align="center"></p>
+        <form name="compare1">
+        <table align = "center"><tr>
+        <td align="center">
+          <tr>
+            <td>Sally</td>
+            <td>   </td>
+            <td>Mary</td>    
+          </tr>
+            <td align="center"><input type="radio" name="compare1judgment" value = "honest"></td>
+            <td>   </td>
+            <td align="center"><input type="radio" name="compare1judgment" value = "polite"></td>
+          </tr>
+        </table>
+        </form>
+        <p id="compare1_why" align="center">Why?</p>
+        <form name="compare1_why" align="center">
+          <input type="text" name="compare1_why"><br>
+        </form>       
+        <br>
+         <p id="compare2" align="center"></p>
+        <form name="compare2">
+        <table align = "center"><tr>
+        <td align="center">
+          <tr>
+            <td>Sally</td>
+            <td>   </td>
+            <td>Mary</td>    
+          </tr>
+            <td align="center"><input type="radio" name="compare2judgment" value = "honest"></td>
+            <td>   </td>
+            <td align="center"><input type="radio" name="compare2judgment" value = "polite"></td>
+          </tr>
+        </table>
+        </form>
+        <p id="compare2_why" align="center">Why?</p>
+        <form name="compare2_why" align="center">
+          <input type="text" name="compare2_why"><br>
+        </form>   
+        <br>
+       <p id="compare3" align="center"></p>
+        <form name="compare3">
+        <table align = "center"><tr>
+        <td align="center">
+          <tr>
+            <td>Sally</td>
+            <td>   </td>
+            <td>Mary</td>    
+          </tr>
+            <td align="center"><input type="radio" name="compare3judgment" value = "honest"></td>
+            <td>   </td>
+            <td align="center"><input type="radio" name="compare3judgment" value = "polite"></td>
+          </tr>
+        </table>
+        </form>
+        <p id="compare3_why" align="center">Why?</p>
+        <form name="compare3_why" align="center">
+          <input type="text" name="compare3_why"><br>
+        </form>       
+</div>
 
     <div class="slide" id="initial1">
       <div id="image1"></div> <!--dynamically built in javascript-->
@@ -93,6 +268,7 @@
       </td></tr><tr><td align="right"><div id = "counter"></div> </td> </tr>
       </table>
       <p class="additional"> Click 'Next' to see what happens next. </p>
+      <div id="message_error"> </div>
     </div>
 
     <div class="slide" id="stage">
