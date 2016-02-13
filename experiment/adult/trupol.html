@@ -152,13 +152,11 @@
 
     <div class="slide" id="slide005">
       <div id="image005"></div> <!--dynamically built in javascript-->
-        <p id="pretest1" align="center"></p>
-        <form name="pretest1" align="center">
-          <input type="text" name="pretest1"><br>
-        </form>
-        <p id="pretest2" align="center"></p>
-        <form name="pretest2"  align="center">
-          <input type="text" name="pretest2"><br>
+        <form name="pretest" align="center">
+        <p align="center" id="pretest1"></p>
+            <textarea type="text" id="pretest1answer" name="why" style="width:100%" value=""></textarea><br>
+        <p align="center" id="pretest2"></p>
+            <textarea type="text" id="pretest2answer" name="how" style="width:100%" value=""></textarea><br>
         </form>
         <br>
 <!--        <p id="test1" align="center"></p>-->
@@ -188,7 +186,7 @@
         </table>
         </form>
       <table align="center"><tr><td> <button type="button" onClick="this.blur(); if
-    (ValidateText(document.pretest1) && ValidateText(document.pretest2) && ValidateForm(document.test1)) {experiment.slide011()}">Next</button> </td> </tr>
+    (ValidateText(document.pretest.pretest1answer) && ValidateText(document.pretest.pretest2answer) && ValidateForm(document.test1)) {experiment.slide011()}">Next</button> </td> </tr>
       </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
   	  </table>
       <p class="additional"> Click 'Next' to read the next part of the story. </p>
@@ -213,8 +211,8 @@
         </form>
         <p id="compare1_why" align="center">Why?</p>
         <form name="compare1_why" align="center">
-          <input type="text" name="compare1_why"><br>
-        </form>       
+            <textarea type="text" id="12_why" name="compare_why" style="width:100%" value=""></textarea>        
+         </form>       
         <br>
       <table align="center"><tr><td> <button type="button" onClick="this.blur(); if ( ValidateText(document.compare1_why) && ValidateForm(document.compare1)) { experiment.end()}">Next</button> </td> </tr>
       </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>

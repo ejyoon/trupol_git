@@ -147,6 +147,7 @@ var experiment = { // end, next, select
     trial1_mean: [],
     trial1_truth: [],
     trial1_2_play: [],   
+    trial1_2_playWhy: [],   
     },
     
   instructions:function() {
@@ -213,12 +214,18 @@ var experiment = { // end, next, select
 //} else if(comp_check1 == 0) {
 //    showSlide("slide004")
 //};
-        var pretest1 = document.getElementById("pretest1").value;
-        experiment.data.trial1_SWhy.push(pretest1);        
-        var pretest2 = document.getElementById("pretest2").value;
-        experiment.data.trial1_LFeel.push(pretest2);        
+        experiment.data.trial1_SWhy.push(document.getElementById("pretest1answer").value);  
+experiment.data.trial1_LFeel.push(document.getElementById("pretest2answer").value);           
+        var test1nice = getRadioCheckedValue(3, "test1nice");
+        var test1mean = getRadioCheckedValue(3, "test1mean");
+        var test1truth = getRadioCheckedValue(3, "test1truth");
+        
+experiment.data.trial1_nice.push(test1nice);  
+experiment.data.trial1_mean.push(test1mean);  
+experiment.data.trial1_truth.push(test1truth);  
+     
        showSlide('slide011');
-        var image011_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/expt1.011.jpeg" alt="slides/expt1.011.jpeg" /></td></tr></table>'
+       var image011_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/expt1.011.jpeg" alt="slides/expt1.011.jpeg" /></td></tr></table>'
 			$("#image011").html(image011_html); //insert dynamically-built html code into html file; 
             $("#compare1").html("Who do you want to play with more?"); // FIXME: counterbalance niceness, meanness and truth-telling
     },
@@ -232,7 +239,13 @@ var experiment = { // end, next, select
 //    },
     
         end: function () {
-        showSlide("finished");
+        var compare = getRadioCheckedValue(4, "compare1judgment");
+        var compare_why = document.getElementById("12_why").value;
+
+experiment.data.trial1_2_play.push(compare);  
+experiment.data.trial1_2_playWhy.push(compare_why);  
+        
+         showSlide("finished");
         setTimeout(function () {
 
             //Decrement  		
