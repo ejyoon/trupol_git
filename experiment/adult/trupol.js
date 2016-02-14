@@ -104,21 +104,56 @@ xmlHttp = new XMLHttpRequest();
 xmlHttp.open( "GET", "http://langcog.stanford.edu/cgi-bin/subject_equalizer/maker_getter.php?conds=" + condCounts + "&filename=" + filename, false );
 xmlHttp.send( null );
 //var cond = xmlHttp.responseText; // For actual experimental runs
-var cond = random(2)+1; // (1-6) For testing only (before running actual)
-
+// var list = random(4)+1; // (1-6) For testing only (before running actual)
+var list = 3;
 
 // ---------------- CONTROL FLOW ------------------
 //PRE-LOAD IMAGES
 // By creating image object and setting source, images preload
-var images = new Array() 
-for (i=0;i<25;i++) {//loop through images you want to use
-    images[i] = new Image()
-    images[i].src =  "slides/expt1.0" + i + ".jpeg"
-    images[i].src =  "slides/expt1.00" + i + ".jpeg"
-    images[i] = new Image()
-    images[i].src =  "slides/cont1.0" + i + ".jpeg"
-    images[i].src =  "slides/cont1.00" + i + ".jpeg"
+if (list == 1) {
+    var cond = "expt";
+    var order = 1;
+    var listeners = ["Edward", "Heather"];
+    var speakers = ["Sally", "Mary", "Stanley", "Richard"];
+    var item = ["cookie", "drawing"];
+    var evaluation = ["yucky", "tasty", "pretty", "ugly"];
+} else if (list == 2) {
+    var cond = "expt";
+    var order = 2;
+    var listeners = ["Heather", "Edward"];
+    var speakers = ["Stanley", "Richard", "Sally", "Mary"];
+    var item = ["drawing", "cookie"];
+    var evaluation = ["pretty", "ugly", "yucky", "tasty"];
+} else if (list == 3) {
+    var cond = "cont";
+    var order = 1;
+    var item = ["cookie", "drawing"];
+    var evaluation = ["yucky", "tasty", "pretty", "ugly"];
+} else if (list == 4) {
+    var cond = "cont";
+    var order = 2;
+    var listeners = ["Heather", "Edward"];
+    var speakers = ["Stanley", "Richard", "Sally", "Mary"];
+    var item = ["drawing", "cookie"];
+    var evaluation = ["pretty", "ugly", "yucky", "tasty"];
+}
 
+
+var images = new Array() 
+for (i=1;i<9;i++) {//loop through images you want to use
+    images[i] = new Image()
+    images[i].src =  "slides/"  + cond + order +  ".0" + i + ".jpeg"
+    images[i].src =  "slides/"  + cond + order +  ".00" + i + ".jpeg"
+    images[i] = new Image()
+    images[i].src =  "slides/"  + cond + order +  ".0" + i + ".jpeg"
+    images[i].src =  "slides/"  + cond + order +  ".00" + i + ".jpeg"
+
+} 
+for (i=10;i<25;i++) {//loop through images you want to use
+    images[i] = new Image()
+    images[i].src =  "slides/"  + cond + order + ".0" + i + ".jpeg"
+    images[i] = new Image()
+    images[i].src =  "slides/" + cond + order + ".0" + i + ".jpeg"
 } 
 
 
@@ -130,8 +165,9 @@ var experiment = { // end, next, select
     data:{
     site: "US", //fixme for other sites
     experiment: "trupol",
-    cond: "FIXME", // randomize exp and cont
-    order: "FIXME", // randomize 1 and 2
+    list: list,
+    cond: cond, // randomize exp and cont
+    order: order, // randomize 1 and 2
     age: "adult",
 //    practice1_nice: [],
 //    practice1_mean: [],
@@ -154,11 +190,12 @@ var experiment = { // end, next, select
     showSlide('instructions2')
   },
 
+// FIXME: add practice questions
     
     slide001: function() {
         showSlide('slide001');
     
-        var image001_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/expt1.001.jpeg" alt="slides/expt1.001.jpeg" /></td></tr></table>'
+        var image001_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.001.jpeg" alt="slides/' + cond + order + '.001.jpeg" /></td></tr></table>'
 			$("#image001").html(image001_html); //insert dynamically-built html code into html file; 
 
     },
@@ -166,7 +203,7 @@ var experiment = { // end, next, select
     slide002: function() {
         showSlide('slide002');
     
-        var image002_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/expt1.002.jpeg" alt="slides/expt1.002.jpeg" /></td></tr></table>'
+        var image002_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.002.jpeg" alt="slides/' + cond + order + '.002.jpeg" /></td></tr></table>'
 			$("#image002").html(image002_html); //insert dynamically-built html code into html file; 
 
     },
@@ -174,7 +211,7 @@ var experiment = { // end, next, select
     slide003: function() {
         showSlide('slide003');
     
-        var image003_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/expt1.003.jpeg" alt="slides/expt1.003.jpeg" /></td></tr></table>'
+        var image003_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.003.jpeg" alt="slides/' + cond + order + '.003.jpeg" /></td></tr></table>'
         $("#image003").html(image003_html); //insert dynamically-built html code into html file; 
         $("#comp_check1").html("Did Sally like the cookie?"); // FIXME: Sally and cookie as variables so that they can change depending on condition
     },
@@ -183,9 +220,9 @@ var experiment = { // end, next, select
         var comp_check1 = getRadioCheckedValue(0, "cc1judgment");
         experiment.data.trial1_comp_like.push(comp_check1);
         showSlide('slide004');
-        var image004_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/expt1.004.jpeg" alt="slides/expt1.004.jpeg" /></td></tr></table>'
+        var image004_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.004.jpeg" alt="slides/' + cond + order + '.004.jpeg" /></td></tr></table>'
 			$("#image004").html(image004_html); //insert dynamically-built html code into html file; 
-            $("#comp_check2").html("What did Sally say to Edward?"); // FIXME: Sally and cookie as variables so that they can change depending on condition
+            $("#comp_check2").html("Sally said to Edward that the cookie was:"); // FIXME: Sally and cookie as variables so that they can change depending on condition
 
     },
     
@@ -198,7 +235,7 @@ var experiment = { // end, next, select
         var comp_check2 = getRadioCheckedValue(1, "cc2judgment");
         experiment.data.trial1_comp_tell.push(comp_check2);
         showSlide('slide005');
-        var image005_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/expt1.005.jpeg" alt="slides/expt1.005.jpeg" /></td></tr></table>'
+        var image005_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.005.jpeg" alt="slides/' + cond + order + '.005.jpeg" /></td></tr></table>'
 			$("#image005").html(image005_html); //insert dynamically-built html code into html file; 
             $("#pretest1").html("Why did Sally say that to Edward?"); // FIXME
             $("#pretest2").html("How did Edward feel?"); // FIXME
@@ -225,7 +262,7 @@ experiment.data.trial1_mean.push(test1mean);
 experiment.data.trial1_truth.push(test1truth);  
      
        showSlide('slide011');
-       var image011_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/expt1.011.jpeg" alt="slides/expt1.011.jpeg" /></td></tr></table>'
+       var image011_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.011.jpeg" alt="slides/' + cond + order + '.011.jpeg" /></td></tr></table>'
 			$("#image011").html(image011_html); //insert dynamically-built html code into html file; 
             $("#compare1").html("Who do you want to play with more?"); // FIXME: counterbalance niceness, meanness and truth-telling
     },
