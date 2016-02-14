@@ -104,8 +104,8 @@ xmlHttp = new XMLHttpRequest();
 xmlHttp.open( "GET", "http://langcog.stanford.edu/cgi-bin/subject_equalizer/maker_getter.php?conds=" + condCounts + "&filename=" + filename, false );
 xmlHttp.send( null );
 //var cond = xmlHttp.responseText; // For actual experimental runs
-// var list = random(4)+1; // (1-6) For testing only (before running actual)
-var list = 3;
+var list = random(4)+1; // (1-6) For testing only (before running actual)
+//var list = 3;
 
 // ---------------- CONTROL FLOW ------------------
 //PRE-LOAD IMAGES
@@ -115,6 +115,7 @@ if (list == 1) {
     var order = 1;
     var listeners = ["Edward", "Heather"];
     var speakers = ["Sally", "Mary", "Stanley", "Richard"];
+    var goals = ["honest", "polite", "polite", "honest"];
     var item = ["cookie", "drawing"];
     var evaluation = ["yucky", "tasty", "pretty", "ugly"];
 } else if (list == 2) {
@@ -122,11 +123,15 @@ if (list == 1) {
     var order = 2;
     var listeners = ["Heather", "Edward"];
     var speakers = ["Stanley", "Richard", "Sally", "Mary"];
+    var goals = ["polite", "honest", "honest", "polite"];
     var item = ["drawing", "cookie"];
     var evaluation = ["pretty", "ugly", "yucky", "tasty"];
 } else if (list == 3) {
     var cond = "cont";
     var order = 1;
+    var listeners = ["Edward", "Heather"];
+    var goals = ["honest", "polite", "polite", "honest"];
+    var speakers = ["Sally", "Mary", "Stanley", "Richard"];
     var item = ["cookie", "drawing"];
     var evaluation = ["yucky", "tasty", "pretty", "ugly"];
 } else if (list == 4) {
@@ -134,6 +139,7 @@ if (list == 1) {
     var order = 2;
     var listeners = ["Heather", "Edward"];
     var speakers = ["Stanley", "Richard", "Sally", "Mary"];
+    var goals = ["polite", "honest", "honest", "polite"];
     var item = ["drawing", "cookie"];
     var evaluation = ["pretty", "ugly", "yucky", "tasty"];
 }
@@ -213,7 +219,7 @@ var experiment = { // end, next, select
     
         var image003_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.003.jpeg" alt="slides/' + cond + order + '.003.jpeg" /></td></tr></table>'
         $("#image003").html(image003_html); //insert dynamically-built html code into html file; 
-        $("#comp_check1").html("Did Sally like the cookie?"); // FIXME: Sally and cookie as variables so that they can change depending on condition
+        $("#comp_check1").html("Did " + speakers[0] + " like the " + item[0] + "?"); // FIXME: Sally and cookie as variables so that they can change depending on condition
     },
     
     slide004: function() {
@@ -222,8 +228,9 @@ var experiment = { // end, next, select
         showSlide('slide004');
         var image004_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.004.jpeg" alt="slides/' + cond + order + '.004.jpeg" /></td></tr></table>'
 			$("#image004").html(image004_html); //insert dynamically-built html code into html file; 
-            $("#comp_check2").html("Sally said to Edward that the cookie was:"); // FIXME: Sally and cookie as variables so that they can change depending on condition
-
+            $("#comp_check2").html(speakers[0] +  " said to " + listeners[0] + " that the " + item[0] + " was:"); // FIXME: Sally and cookie as variables so that they can change depending on condition
+            $("#comp_check2_adj1").html(evaluation[1])
+            $("#comp_check2_adj2").html(evaluation[0])
     },
     
     slide005: function() {
@@ -237,11 +244,11 @@ var experiment = { // end, next, select
         showSlide('slide005');
         var image005_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.005.jpeg" alt="slides/' + cond + order + '.005.jpeg" /></td></tr></table>'
 			$("#image005").html(image005_html); //insert dynamically-built html code into html file; 
-            $("#pretest1").html("Why did Sally say that to Edward?"); // FIXME
-            $("#pretest2").html("How did Edward feel?"); // FIXME
-            $("#test1").html("Was Sally nice?"); // FIXME: counterbalance niceness, meanness and truth-telling
-            $("#test2").html("Was Sally mean?"); // FIXME: counterbalance niceness, meanness and truth-telling
-            $("#test3").html("Was Sally telling the truth?"); // FIXME: counterbalance niceness, meanness and truth-telling
+            $("#pretest1").html("Why did "  + speakers[0] +  " say that to " + listeners[0] + "?"); // FIXME
+            $("#pretest2").html("How did " + listeners[0] + " feel?"); // FIXME
+            $("#test1_1").html("Was "  + speakers[0] +  " nice?"); // FIXME: counterbalance niceness, meanness and truth-telling
+            $("#test1_2").html("Was "  + speakers[0] +  " mean?"); // FIXME: counterbalance niceness, meanness and truth-telling
+            $("#test1_3").html("Was "  + speakers[0] +  " telling the truth?"); // FIXME: counterbalance niceness, meanness and truth-telling
 
     },
 
@@ -265,6 +272,8 @@ experiment.data.trial1_truth.push(test1truth);
        var image011_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.011.jpeg" alt="slides/' + cond + order + '.011.jpeg" /></td></tr></table>'
 			$("#image011").html(image011_html); //insert dynamically-built html code into html file; 
             $("#compare1").html("Who do you want to play with more?"); // FIXME: counterbalance niceness, meanness and truth-telling
+            $("#speaker1_1").html(speakers[0]);
+            $("#speaker1_2").html(speakers[1]);
     },
 
 //    if (document.getElementById('item_0').checked || document.getElementById('item_1').checked || document.getElementById('item_2').checked) {    
@@ -276,7 +285,11 @@ experiment.data.trial1_truth.push(test1truth);
 //    },
     
         end: function () {
-        var compare = getRadioCheckedValue(4, "compare1judgment");
+        if (getRadioCheckedValue(4, "compare1judgment") == "1") {
+            var compare = goals[0];                
+            } else if (getRadioCheckedValue(4, "compare1judgment") == "2") {
+            var compare = goals[1];                
+            }
         var compare_why = document.getElementById("12_why").value;
 
 experiment.data.trial1_2_play.push(compare);  
