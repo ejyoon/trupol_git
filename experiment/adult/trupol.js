@@ -115,7 +115,8 @@ if (list == 1) {
     var order = 1;
     var listeners = ["Edward", "Heather"];
     var speakers = ["Sally", "Mary", "Stanley", "Richard"];
-    var goals = ["honest", "polite", "polite", "honest"];
+    var speaker_types = ["honest", "polite", "polite", "honest"];
+    var goals = ["nice", "mean", "telling the truth"];
     var item = ["cookie", "drawing"];
     var evaluation = ["yucky", "tasty", "pretty", "ugly"];
 } else if (list == 2) {
@@ -123,15 +124,17 @@ if (list == 1) {
     var order = 2;
     var listeners = ["Heather", "Edward"];
     var speakers = ["Stanley", "Richard", "Sally", "Mary"];
-    var goals = ["polite", "honest", "honest", "polite"];
+    var speaker_types = ["polite", "honest", "honest", "polite"];
+    var goals = ["telling the truth", "mean", "nice"];
     var item = ["drawing", "cookie"];
     var evaluation = ["pretty", "ugly", "yucky", "tasty"];
 } else if (list == 3) {
     var cond = "cont";
     var order = 1;
     var listeners = ["Edward", "Heather"];
-    var goals = ["honest", "polite", "polite", "honest"];
+    var speaker_types = ["honest", "polite", "polite", "honest"];
     var speakers = ["Sally", "Mary", "Stanley", "Richard"];
+    var goals = ["nice", "mean", "telling the truth"];
     var item = ["cookie", "drawing"];
     var evaluation = ["yucky", "tasty", "pretty", "ugly"];
 } else if (list == 4) {
@@ -139,7 +142,8 @@ if (list == 1) {
     var order = 2;
     var listeners = ["Heather", "Edward"];
     var speakers = ["Stanley", "Richard", "Sally", "Mary"];
-    var goals = ["polite", "honest", "honest", "polite"];
+    var speaker_types = ["polite", "honest", "honest", "polite"];
+    var goals = ["telling the truth", "mean", "nice"];
     var item = ["drawing", "cookie"];
     var evaluation = ["pretty", "ugly", "yucky", "tasty"];
 }
@@ -253,9 +257,9 @@ var experiment = { // end, next, select
 			$("#image005").html(image005_html); //insert dynamically-built html code into html file; 
             $("#pretest1_1").html("Why did "  + speakers[0] +  " say that to " + listeners[0] + "?"); // FIXME
             $("#pretest1_2").html("How did " + listeners[0] + " feel?"); // FIXME
-            $("#test1_1").html("Was "  + speakers[0] +  " nice?"); // FIXME: counterbalance niceness, meanness and truth-telling
-            $("#test1_2").html("Was "  + speakers[0] +  " mean?"); // FIXME: counterbalance niceness, meanness and truth-telling
-            $("#test1_3").html("Was "  + speakers[0] +  " telling the truth?"); // FIXME: counterbalance niceness, meanness and truth-telling
+            $("#test1_1").html("Was "  + speakers[0] +  " " + goals[0] + "?"); // FIXME: counterbalance niceness, meanness and truth-telling
+            $("#test1_2").html("Was "  + speakers[0] +  " " + goals[1] + "?"); // FIXME: counterbalance niceness, meanness and truth-telling
+            $("#test1_3").html("Was "  + speakers[0] +  " " + goals[2] + "?"); // FIXME: counterbalance niceness, meanness and truth-telling
 
     },
 
@@ -263,9 +267,15 @@ var experiment = { // end, next, select
     slide006: function() {
         experiment.data.trial1_SWhy.push(document.getElementById("pretest1_1answer").value);  
 experiment.data.trial1_LFeel.push(document.getElementById("pretest1_2answer").value);           
-        var test1nice = getRadioCheckedValue(3, "test1nice");
-        var test1mean = getRadioCheckedValue(3, "test1mean");
-        var test1truth = getRadioCheckedValue(3, "test1truth");
+    if(order == 1) {
+        var test1nice = getRadioCheckedValue(3, "test1_item1");
+        var test1mean = getRadioCheckedValue(3, "test1_item2");
+        var test1truth = getRadioCheckedValue(3, "test1_item3");            
+    } else if (order == 2) {
+        var test1nice = getRadioCheckedValue(3, "test1_item3");
+        var test1mean = getRadioCheckedValue(3, "test1_item2");
+        var test1truth = getRadioCheckedValue(3, "test1_item1");        
+    }
         
 experiment.data.trial1_nice.push(test1nice);  
 experiment.data.trial1_mean.push(test1mean);  
@@ -311,9 +321,9 @@ experiment.data.trial1_truth.push(test1truth);
 			$("#image010").html(image010_html); 
             $("#pretest2_1").html("Why did "  + speakers[1] +  " say that to " + listeners[0] + "?");
             $("#pretest2_2").html("How did " + listeners[0] + " feel?");
-            $("#test2_1").html("Was "  + speakers[1] +  " nice?"); // FIXME: counterbalance niceness, meanness and truth-telling
-            $("#test2_2").html("Was "  + speakers[1] +  " mean?"); // FIXME: counterbalance niceness, meanness and truth-telling
-            $("#test2_3").html("Was "  + speakers[1] +  " telling the truth?"); // FIXME: counterbalance niceness, meanness and truth-telling
+            $("#test2_1").html("Was "  + speakers[1] +  " " + goals[0] + "?"); // FIXME: counterbalance niceness, meanness and truth-telling
+            $("#test2_2").html("Was "  + speakers[1] +  " " + goals[1] + "?"); // FIXME: counterbalance niceness, meanness and truth-telling
+            $("#test2_3").html("Was "  + speakers[1] +  " " + goals[2] + "?"); // FIXME: counterbalance niceness, meanness and truth-telling
 
     },
     
@@ -321,10 +331,16 @@ experiment.data.trial1_truth.push(test1truth);
     slide011: function() {
 
         experiment.data.trial2_SWhy.push(document.getElementById("pretest2_1answer").value);  
-experiment.data.trial2_LFeel.push(document.getElementById("pretest2_2answer").value);           
-        var test2nice = getRadioCheckedValue(7, "test2nice");
-        var test2mean = getRadioCheckedValue(7, "test2mean");
-        var test2truth = getRadioCheckedValue(7, "test2truth");
+experiment.data.trial2_LFeel.push(document.getElementById("pretest2_2answer").value);  
+    if(order == 1) {
+        var test2nice = getRadioCheckedValue(7, "test2_item1");
+        var test2mean = getRadioCheckedValue(7, "test2_item2");
+        var test2truth = getRadioCheckedValue(7, "test2_item3");            
+    } else if (order == 2) {
+        var test2nice = getRadioCheckedValue(7, "test2_item3");
+        var test2mean = getRadioCheckedValue(7, "test2_item2");
+        var test2truth = getRadioCheckedValue(7, "test2_item1");        
+    }
         
 experiment.data.trial2_nice.push(test2nice);  
 experiment.data.trial2_mean.push(test2mean);  
@@ -340,9 +356,9 @@ experiment.data.trial2_truth.push(test2truth);
     
         end: function () {
         if (getRadioCheckedValue(8, "compare1judgment") == "1") {
-            var compare = goals[0];                
+            var compare = speaker_types[0];                
             } else if (getRadioCheckedValue(8, "compare1judgment") == "2") {
-            var compare = goals[1];                
+            var compare = speaker_types[1];                
             }
         var compare_why = document.getElementById("12_why").value;
 
