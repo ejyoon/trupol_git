@@ -179,12 +179,12 @@ var experiment = { // end, next, select
     cond: cond, // randomize exp and cont
     order: order, // randomize 1 and 2
     age: "adult",
-//    practice1_nice: [],
-//    practice1_mean: [],
-//    practice2_nice: [],
-//    practice2_mean: [],
-//    practice3_truth: [],
-//    practice3_lie: [],
+    practice1_nice: [],
+    practice1_mean: [],
+    practice2_nice: [],
+    practice2_mean: [],
+    practice3_truth: [],
+    practice4_truth: [],
     trial1_comp_like: [],
     trial1_comp_tell: [],
     trial1_SWhy: [],
@@ -207,9 +207,26 @@ var experiment = { // end, next, select
     showSlide('instructions2')
   },
 
-// FIXME: add practice questions
+    practice: function () {
+        
+    showSlide('practice')        
+    },
     
     slide001: function() {
+        var practice1_nice = getRadioCheckedValue(0, "practice1_nice");
+        var practice1_mean = getRadioCheckedValue(0, "practice1_mean");
+        var practice2_nice = getRadioCheckedValue(0, "practice2_nice");
+        var practice2_mean = getRadioCheckedValue(0, "practice2_mean");
+        var practice3_truth = getRadioCheckedValue(0, "practice3_truth");            
+        var practice4_truth = getRadioCheckedValue(0, "practice4_truth");            
+
+        experiment.data.practice1_nice.push(practice1_nice);  
+        experiment.data.practice1_mean.push(practice1_mean);  
+        experiment.data.practice2_nice.push(practice2_nice);  
+        experiment.data.practice2_mean.push(practice2_mean);  
+        experiment.data.practice3_truth.push(practice3_truth);  
+        experiment.data.practice4_truth.push(practice4_truth);  
+
         showSlide('slide001');
     
         var image001_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.001.jpeg" alt="slides/' + cond + order + '.001.jpeg" /></td></tr></table>'
@@ -234,7 +251,7 @@ var experiment = { // end, next, select
     },
     
     slide004: function() {
-        var comp_check1 = getRadioCheckedValue(0, "cc1_1judgment");
+        var comp_check1 = getRadioCheckedValue(1, "cc1_1judgment");
         experiment.data.trial1_comp_like.push(comp_check1);
         showSlide('slide004');
         var image004_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.004.jpeg" alt="slides/' + cond + order + '.004.jpeg" /></td></tr></table>'
@@ -245,12 +262,7 @@ var experiment = { // end, next, select
     },
     
     slide005: function() {
-//      var comp_check1 = getRadioCheckedValue(1, "cc1judgment");
-//        if(comp_check1 == 1) {         $("#message_error").html('<font color="red">Your answer is incorrect! Try again.</font>');        
-//} else if(comp_check1 == 0) {
-//    showSlide("slide004")
-//};
-        var comp_check2 = getRadioCheckedValue(1, "cc1_2judgment");
+        var comp_check2 = getRadioCheckedValue(2, "cc1_2judgment");
         experiment.data.trial1_comp_tell.push(comp_check2);
         showSlide('slide005');
         var image005_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.005.jpeg" alt="slides/' + cond + order + '.005.jpeg" /></td></tr></table>'
@@ -268,13 +280,13 @@ var experiment = { // end, next, select
         experiment.data.trial1_SWhy.push(document.getElementById("pretest1_1answer").value);  
 experiment.data.trial1_LFeel.push(document.getElementById("pretest1_2answer").value);           
     if(order == 1) {
-        var test1nice = getRadioCheckedValue(3, "test1_item1");
-        var test1mean = getRadioCheckedValue(3, "test1_item2");
-        var test1truth = getRadioCheckedValue(3, "test1_item3");            
+        var test1nice = getRadioCheckedValue(4, "test1_item1");
+        var test1mean = getRadioCheckedValue(4, "test1_item2");
+        var test1truth = getRadioCheckedValue(4, "test1_item3");            
     } else if (order == 2) {
-        var test1nice = getRadioCheckedValue(3, "test1_item3");
-        var test1mean = getRadioCheckedValue(3, "test1_item2");
-        var test1truth = getRadioCheckedValue(3, "test1_item1");        
+        var test1nice = getRadioCheckedValue(4, "test1_item3");
+        var test1mean = getRadioCheckedValue(4, "test1_item2");
+        var test1truth = getRadioCheckedValue(4, "test1_item1");        
     }
         
 experiment.data.trial1_nice.push(test1nice);  
@@ -303,7 +315,7 @@ experiment.data.trial1_truth.push(test1truth);
     },
     
     slide009: function() {
-        var comp_check1 = getRadioCheckedValue(4, "cc2_1judgment");
+        var comp_check1 = getRadioCheckedValue(5, "cc2_1judgment");
         experiment.data.trial2_comp_like.push(comp_check1);
         showSlide('slide009');
         var image009_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.009.jpeg" alt="slides/' + cond + order + '.009.jpeg" /></td></tr></table>'
@@ -314,7 +326,7 @@ experiment.data.trial1_truth.push(test1truth);
     },
     
     slide010: function() {
-        var comp_check2 = getRadioCheckedValue(5, "cc2_2judgment");
+        var comp_check2 = getRadioCheckedValue(6, "cc2_2judgment");
         experiment.data.trial2_comp_tell.push(comp_check2);
         showSlide('slide010');
         var image010_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.010.jpeg" alt="slides/' + cond + order + '.010.jpeg" /></td></tr></table>'
@@ -333,13 +345,13 @@ experiment.data.trial1_truth.push(test1truth);
         experiment.data.trial2_SWhy.push(document.getElementById("pretest2_1answer").value);  
 experiment.data.trial2_LFeel.push(document.getElementById("pretest2_2answer").value);  
     if(order == 1) {
-        var test2nice = getRadioCheckedValue(7, "test2_item1");
-        var test2mean = getRadioCheckedValue(7, "test2_item2");
-        var test2truth = getRadioCheckedValue(7, "test2_item3");            
+        var test2nice = getRadioCheckedValue(8, "test2_item1");
+        var test2mean = getRadioCheckedValue(8, "test2_item2");
+        var test2truth = getRadioCheckedValue(8, "test2_item3");            
     } else if (order == 2) {
-        var test2nice = getRadioCheckedValue(7, "test2_item3");
-        var test2mean = getRadioCheckedValue(7, "test2_item2");
-        var test2truth = getRadioCheckedValue(7, "test2_item1");        
+        var test2nice = getRadioCheckedValue(8, "test2_item3");
+        var test2mean = getRadioCheckedValue(8, "test2_item2");
+        var test2truth = getRadioCheckedValue(8, "test2_item1");        
     }
         
 experiment.data.trial2_nice.push(test2nice);  
@@ -355,9 +367,9 @@ experiment.data.trial2_truth.push(test2truth);
     },
     
         end: function () {
-        if (getRadioCheckedValue(8, "compare1judgment") == "1") {
+        if (getRadioCheckedValue(9, "compare1judgment") == "1") {
             var compare = speaker_types[0];                
-            } else if (getRadioCheckedValue(8, "compare1judgment") == "2") {
+            } else if (getRadioCheckedValue(9, "compare1judgment") == "2") {
             var compare = speaker_types[1];                
             }
         var compare_why = document.getElementById("12_why").value;
