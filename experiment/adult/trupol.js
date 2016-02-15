@@ -1,23 +1,16 @@
-// Implook ver 0
+// trupol adult experiment
 // Overview: (i) Helper (ii) Parameters (iii) Control Flow
-
-// ***WHAT'S BEEN DONE SO FAR***
-// DISPLAY: ignorance implicature for Elmo
-// ***INCLUDE STEPEXPERIMENT FUNCTION to only go on if it's real worker***
-// ***CHANGE MAKER GETTER - 1) with actual numbers that I want 2) only decrement for real workers***
-// check whether submiterator works if the webpage is empty? (i.e., is the html and js from the directory on my computer or from webpage? if the latter, what's the offline directory specified in the submiterator for?)
-
 
 // ---------------- HELPER ------------------
 
 function showSlide(id) {
-  $(".slide").hide(); //jquery - all elements with class of slide - hide
-  $("#"+id).show(); //jquery - element with given id - show
+  $(".slide").hide();
+  $("#"+id).show();
 }
 
 //array shuffle function
-shuffle = function (o) { //v1.0
-    for (var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x); //anything you want to randomize
+shuffle = function (o) {
+    for (var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
     return o;
 }
 
@@ -95,16 +88,14 @@ function getRadioCheckedValue(formNum, radio_name)
 
 
 // ---------------- PARAMETERS ------------------
-// *** Maker getter function***
-// substitution for picking a random cond for now:
 var filename = "EJY_trupol"
-var condCounts = "1,20;2,20;" //Example: "cond1,#of ppl20;2,20;3,20" EDIT
+var condCounts = "1,20;2,20;" // FIXME
 var xmlHttp = null;
 xmlHttp = new XMLHttpRequest(); 
 xmlHttp.open( "GET", "http://langcog.stanford.edu/cgi-bin/subject_equalizer/maker_getter.php?conds=" + condCounts + "&filename=" + filename, false );
 xmlHttp.send( null );
 //var cond = xmlHttp.responseText; // For actual experimental runs
-var list = random(4)+1; // (1-6) For testing only (before running actual)
+var list = random(4)+1; // For testing only FIXME
 //var list = 3;
 
 // ---------------- CONTROL FLOW ------------------
@@ -150,7 +141,7 @@ if (list == 1) {
 
 
 var images = new Array() 
-for (i=1;i<9;i++) {//loop through images you want to use
+for (i=1;i<9;i++) {
     images[i] = new Image()
     images[i].src =  "slides/"  + cond + order +  ".0" + i + ".jpeg"
     images[i].src =  "slides/"  + cond + order +  ".00" + i + ".jpeg"
@@ -159,7 +150,7 @@ for (i=1;i<9;i++) {//loop through images you want to use
     images[i].src =  "slides/"  + cond + order +  ".00" + i + ".jpeg"
 
 } 
-for (i=10;i<25;i++) {//loop through images you want to use
+for (i=10;i<25;i++) {
     images[i] = new Image()
     images[i].src =  "slides/"  + cond + order + ".0" + i + ".jpeg"
     images[i] = new Image()
@@ -170,14 +161,14 @@ for (i=10;i<25;i++) {//loop through images you want to use
 showSlide("instructions");
 
 // MAIN EXPERIMENT
-var experiment = { // end, next, select
+var experiment = {
     
     data:{
     site: "US", //fixme for other sites
     experiment: "trupol",
     list: list,
-    cond: cond, // randomize exp and cont
-    order: order, // randomize 1 and 2
+    cond: cond,
+    order: order,
     age: "adult",
     practice1_nice: [],
     practice1_mean: [],
@@ -212,6 +203,8 @@ var experiment = { // end, next, select
     showSlide('practice')        
     },
     
+//////////// SPEAKER 1 //////////
+    
     slide001: function() {
         var practice1_nice = getRadioCheckedValue(0, "practice1_nice");
         var practice1_mean = getRadioCheckedValue(0, "practice1_mean");
@@ -230,7 +223,7 @@ var experiment = { // end, next, select
         showSlide('slide001');
     
         var image001_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.001.jpeg" alt="slides/' + cond + order + '.001.jpeg" /></td></tr></table>'
-			$("#image001").html(image001_html); //insert dynamically-built html code into html file; 
+			$("#image001").html(image001_html);
 
     },
     
@@ -238,7 +231,7 @@ var experiment = { // end, next, select
         showSlide('slide002');
     
         var image002_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.002.jpeg" alt="slides/' + cond + order + '.002.jpeg" /></td></tr></table>'
-			$("#image002").html(image002_html); //insert dynamically-built html code into html file; 
+			$("#image002").html(image002_html);
 
     },
     
@@ -246,8 +239,8 @@ var experiment = { // end, next, select
         showSlide('slide003');
     
         var image003_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.003.jpeg" alt="slides/' + cond + order + '.003.jpeg" /></td></tr></table>'
-        $("#image003").html(image003_html); //insert dynamically-built html code into html file; 
-        $("#comp_check1_1").html("Did " + speakers[0] + " like the " + item[0] + "?"); // FIXME: Sally and cookie as variables so that they can change depending on condition
+        $("#image003").html(image003_html);
+        $("#comp_check1_1").html("Did " + speakers[0] + " like the " + item[0] + "?"); 
     },
     
     slide004: function() {
@@ -256,7 +249,7 @@ var experiment = { // end, next, select
         showSlide('slide004');
         var image004_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.004.jpeg" alt="slides/' + cond + order + '.004.jpeg" /></td></tr></table>'
 			$("#image004").html(image004_html); //insert dynamically-built html code into html file; 
-            $("#comp_check1_2").html(speakers[0] +  " said to " + listeners[0] + " that the " + item[0] + " was:"); // FIXME: Sally and cookie as variables so that they can change depending on condition
+            $("#comp_check1_2").html(speakers[0] +  " said to " + listeners[0] + " that the " + item[0] + " was:"); 
             $("#comp_check1_2_adj1").html(evaluation[1])
             $("#comp_check1_2_adj2").html(evaluation[0])
     },
@@ -268,10 +261,10 @@ var experiment = { // end, next, select
         var image005_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.005.jpeg" alt="slides/' + cond + order + '.005.jpeg" /></td></tr></table>'
 			$("#image005").html(image005_html); //insert dynamically-built html code into html file; 
             $("#pretest1_1").html("Why did "  + speakers[0] +  " say that to " + listeners[0] + "?"); // FIXME
-            $("#pretest1_2").html("How did " + listeners[0] + " feel?"); // FIXME
-            $("#test1_1").html("Was "  + speakers[0] +  " " + goals[0] + "?"); // FIXME: counterbalance niceness, meanness and truth-telling
-            $("#test1_2").html("Was "  + speakers[0] +  " " + goals[1] + "?"); // FIXME: counterbalance niceness, meanness and truth-telling
-            $("#test1_3").html("Was "  + speakers[0] +  " " + goals[2] + "?"); // FIXME: counterbalance niceness, meanness and truth-telling
+            $("#pretest1_2").html("How did " + listeners[0] + " feel?"); 
+            $("#test1_1").html("Was "  + speakers[0] +  " " + goals[0] + "?");
+            $("#test1_2").html("Was "  + speakers[0] +  " " + goals[1] + "?"); 
+            $("#test1_3").html("Was "  + speakers[0] +  " " + goals[2] + "?");
 
     },
 
@@ -333,16 +326,15 @@ experiment.data.trial1_truth.push(test1truth);
 			$("#image010").html(image010_html); 
             $("#pretest2_1").html("Why did "  + speakers[1] +  " say that to " + listeners[0] + "?");
             $("#pretest2_2").html("How did " + listeners[0] + " feel?");
-            $("#test2_1").html("Was "  + speakers[1] +  " " + goals[0] + "?"); // FIXME: counterbalance niceness, meanness and truth-telling
-            $("#test2_2").html("Was "  + speakers[1] +  " " + goals[1] + "?"); // FIXME: counterbalance niceness, meanness and truth-telling
-            $("#test2_3").html("Was "  + speakers[1] +  " " + goals[2] + "?"); // FIXME: counterbalance niceness, meanness and truth-telling
+            $("#test2_1").html("Was "  + speakers[1] +  " " + goals[0] + "?");
+            $("#test2_2").html("Was "  + speakers[1] +  " " + goals[1] + "?");
+            $("#test2_3").html("Was "  + speakers[1] +  " " + goals[2] + "?");
 
     },
     
+//////////// SPEAKER 1+2 comparison //////////
     
-    slide011: function() {
-
-        experiment.data.trial2_SWhy.push(document.getElementById("pretest2_1answer").value);  
+    slide011: function() {        experiment.data.trial2_SWhy.push(document.getElementById("pretest2_1answer").value);  
 experiment.data.trial2_LFeel.push(document.getElementById("pretest2_2answer").value);  
     if(order == 1) {
         var test2nice = getRadioCheckedValue(8, "test2_item1");
@@ -387,7 +379,7 @@ experiment.data.trial1_2_playWhy.push(compare_why);
             xmlHttp.send(null);
 
             turk.submit(experiment.data);
-        }, 1500); //function() - anonymous function
+        }, 1500);
     },
 }
 
