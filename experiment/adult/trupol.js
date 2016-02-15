@@ -188,6 +188,13 @@ var experiment = { // end, next, select
     trial1_nice: [],
     trial1_mean: [],
     trial1_truth: [],
+    trial2_comp_like: [],
+    trial2_comp_tell: [],
+    trial2_SWhy: [],
+    trial2_LFeel: [],
+    trial2_nice: [],
+    trial2_mean: [],
+    trial2_truth: [],
     trial1_2_play: [],   
     trial1_2_playWhy: [],   
     },
@@ -219,18 +226,18 @@ var experiment = { // end, next, select
     
         var image003_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.003.jpeg" alt="slides/' + cond + order + '.003.jpeg" /></td></tr></table>'
         $("#image003").html(image003_html); //insert dynamically-built html code into html file; 
-        $("#comp_check1").html("Did " + speakers[0] + " like the " + item[0] + "?"); // FIXME: Sally and cookie as variables so that they can change depending on condition
+        $("#comp_check1_1").html("Did " + speakers[0] + " like the " + item[0] + "?"); // FIXME: Sally and cookie as variables so that they can change depending on condition
     },
     
     slide004: function() {
-        var comp_check1 = getRadioCheckedValue(0, "cc1judgment");
+        var comp_check1 = getRadioCheckedValue(0, "cc1_1judgment");
         experiment.data.trial1_comp_like.push(comp_check1);
         showSlide('slide004');
         var image004_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.004.jpeg" alt="slides/' + cond + order + '.004.jpeg" /></td></tr></table>'
 			$("#image004").html(image004_html); //insert dynamically-built html code into html file; 
-            $("#comp_check2").html(speakers[0] +  " said to " + listeners[0] + " that the " + item[0] + " was:"); // FIXME: Sally and cookie as variables so that they can change depending on condition
-            $("#comp_check2_adj1").html(evaluation[1])
-            $("#comp_check2_adj2").html(evaluation[0])
+            $("#comp_check1_2").html(speakers[0] +  " said to " + listeners[0] + " that the " + item[0] + " was:"); // FIXME: Sally and cookie as variables so that they can change depending on condition
+            $("#comp_check1_2_adj1").html(evaluation[1])
+            $("#comp_check1_2_adj2").html(evaluation[0])
     },
     
     slide005: function() {
@@ -239,27 +246,23 @@ var experiment = { // end, next, select
 //} else if(comp_check1 == 0) {
 //    showSlide("slide004")
 //};
-        var comp_check2 = getRadioCheckedValue(1, "cc2judgment");
+        var comp_check2 = getRadioCheckedValue(1, "cc1_2judgment");
         experiment.data.trial1_comp_tell.push(comp_check2);
         showSlide('slide005');
         var image005_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.005.jpeg" alt="slides/' + cond + order + '.005.jpeg" /></td></tr></table>'
 			$("#image005").html(image005_html); //insert dynamically-built html code into html file; 
-            $("#pretest1").html("Why did "  + speakers[0] +  " say that to " + listeners[0] + "?"); // FIXME
-            $("#pretest2").html("How did " + listeners[0] + " feel?"); // FIXME
+            $("#pretest1_1").html("Why did "  + speakers[0] +  " say that to " + listeners[0] + "?"); // FIXME
+            $("#pretest1_2").html("How did " + listeners[0] + " feel?"); // FIXME
             $("#test1_1").html("Was "  + speakers[0] +  " nice?"); // FIXME: counterbalance niceness, meanness and truth-telling
             $("#test1_2").html("Was "  + speakers[0] +  " mean?"); // FIXME: counterbalance niceness, meanness and truth-telling
             $("#test1_3").html("Was "  + speakers[0] +  " telling the truth?"); // FIXME: counterbalance niceness, meanness and truth-telling
 
     },
 
-    slide011: function() {
-//      var comp_check1 = getRadioCheckedValue(1, "cc1judgment");
-//        if(comp_check1 == 1) {         $("#message_error").html('<font color="red">Your answer is incorrect! Try again.</font>');        
-//} else if(comp_check1 == 0) {
-//    showSlide("slide004")
-//};
-        experiment.data.trial1_SWhy.push(document.getElementById("pretest1answer").value);  
-experiment.data.trial1_LFeel.push(document.getElementById("pretest2answer").value);           
+//////////// SPEAKER 2 //////////
+    slide006: function() {
+        experiment.data.trial1_SWhy.push(document.getElementById("pretest1_1answer").value);  
+experiment.data.trial1_LFeel.push(document.getElementById("pretest1_2answer").value);           
         var test1nice = getRadioCheckedValue(3, "test1nice");
         var test1mean = getRadioCheckedValue(3, "test1mean");
         var test1truth = getRadioCheckedValue(3, "test1truth");
@@ -268,6 +271,65 @@ experiment.data.trial1_nice.push(test1nice);
 experiment.data.trial1_mean.push(test1mean);  
 experiment.data.trial1_truth.push(test1truth);  
      
+        
+        showSlide('slide006');    
+        var image006_html = 
+            '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.006.jpeg" alt="slides/' + cond + order + '.006.jpeg" /></td></tr></table>'
+			$("#image006").html(image006_html); 
+    },
+    
+    slide007: function() {
+        showSlide('slide007');
+        var image007_html = 
+            '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.007.jpeg" alt="slides/' + cond + order + '.007.jpeg" /></td></tr></table>'
+			$("#image007").html(image007_html);
+    },
+    
+    slide008: function() {
+        showSlide('slide008');    
+        var image008_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.008.jpeg" alt="slides/' + cond + order + '.008.jpeg" /></td></tr></table>'
+        $("#image008").html(image008_html);
+        $("#comp_check2_1").html("Did " + speakers[1] + " like the " + item[0] + "?");
+    },
+    
+    slide009: function() {
+        var comp_check1 = getRadioCheckedValue(4, "cc2_1judgment");
+        experiment.data.trial2_comp_like.push(comp_check1);
+        showSlide('slide009');
+        var image009_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.009.jpeg" alt="slides/' + cond + order + '.009.jpeg" /></td></tr></table>'
+			$("#image009").html(image009_html);
+            $("#comp_check2_2").html(speakers[1] +  " said to " + listeners[0] + " that the " + item[0] + " was:");
+            $("#comp_check2_2_adj1").html(evaluation[0])
+            $("#comp_check2_2_adj2").html(evaluation[1])
+    },
+    
+    slide010: function() {
+        var comp_check2 = getRadioCheckedValue(5, "cc2_2judgment");
+        experiment.data.trial2_comp_tell.push(comp_check2);
+        showSlide('slide010');
+        var image010_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.010.jpeg" alt="slides/' + cond + order + '.010.jpeg" /></td></tr></table>'
+			$("#image010").html(image010_html); 
+            $("#pretest2_1").html("Why did "  + speakers[1] +  " say that to " + listeners[0] + "?");
+            $("#pretest2_2").html("How did " + listeners[0] + " feel?");
+            $("#test2_1").html("Was "  + speakers[1] +  " nice?"); // FIXME: counterbalance niceness, meanness and truth-telling
+            $("#test2_2").html("Was "  + speakers[1] +  " mean?"); // FIXME: counterbalance niceness, meanness and truth-telling
+            $("#test2_3").html("Was "  + speakers[1] +  " telling the truth?"); // FIXME: counterbalance niceness, meanness and truth-telling
+
+    },
+    
+    
+    slide011: function() {
+
+        experiment.data.trial2_SWhy.push(document.getElementById("pretest2_1answer").value);  
+experiment.data.trial2_LFeel.push(document.getElementById("pretest2_2answer").value);           
+        var test2nice = getRadioCheckedValue(7, "test2nice");
+        var test2mean = getRadioCheckedValue(7, "test2mean");
+        var test2truth = getRadioCheckedValue(7, "test2truth");
+        
+experiment.data.trial2_nice.push(test2nice);  
+experiment.data.trial2_mean.push(test2mean);  
+experiment.data.trial2_truth.push(test2truth);  
+     
        showSlide('slide011');
        var image011_html = '<table align="center"><tr><td align="center"><img style="display:block;" width=512 height=384 src="slides/' + cond + order + '.011.jpeg" alt="slides/' + cond + order + '.011.jpeg" /></td></tr></table>'
 			$("#image011").html(image011_html); //insert dynamically-built html code into html file; 
@@ -275,19 +337,11 @@ experiment.data.trial1_truth.push(test1truth);
             $("#speaker1_1").html(speakers[0]);
             $("#speaker1_2").html(speakers[1]);
     },
-
-//    if (document.getElementById('item_0').checked || document.getElementById('item_1').checked || document.getElementById('item_2').checked) {    
-//    setTimeout(experiment.end, 500);
-//
-//   } else {
-//     $("#messagesum").html('<font color="red">Please select an object!</font>');
-//   }
-//    },
     
         end: function () {
-        if (getRadioCheckedValue(4, "compare1judgment") == "1") {
+        if (getRadioCheckedValue(8, "compare1judgment") == "1") {
             var compare = goals[0];                
-            } else if (getRadioCheckedValue(4, "compare1judgment") == "2") {
+            } else if (getRadioCheckedValue(8, "compare1judgment") == "2") {
             var compare = goals[1];                
             }
         var compare_why = document.getElementById("12_why").value;
