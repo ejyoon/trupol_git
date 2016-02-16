@@ -169,6 +169,9 @@ var experiment = {
     cond: cond,
     order: order,
     age: "adult",
+    language: [],
+    expt_aim: [],
+    expt_gen: [],
     practice1_nice: [],
     practice1_mean: [],
     practice2_nice: [],
@@ -534,7 +537,7 @@ experiment.data.trial4_truth.push(test4truth);
             $("#speaker2_2").html(speakers[3]);
     },
     
-        end: function () {
+    askinfo: function() {
         if (getRadioCheckedValue(19, "compare2judgment") == "1") {
             var compare = speaker_types[2];                
             } else if (getRadioCheckedValue(19, "compare2judgment") == "2") {
@@ -544,8 +547,14 @@ experiment.data.trial4_truth.push(test4truth);
 
 experiment.data.trial3_4_play.push(compare);  
 experiment.data.trial3_4_playWhy.push(compare_why);  
-        
-         showSlide("finished");
+        showSlide("askInfo");
+    },
+    
+        end: function () {
+experiment.data.language.push(document.getElementById("homelang").value);	experiment.data.expt_aim.push(document.getElementById("expthoughts").value);		experiment.data.expt_gen.push(document.getElementById("expcomments").value);
+
+            
+        showSlide("finished");
         setTimeout(function () {
 
             //Decrement  		
