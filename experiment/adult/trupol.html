@@ -51,7 +51,22 @@
         return false; 
     }
 };
-    
+
+   function ValidateComplexForm(form){
+    var valid = 0;
+    for(var i = 0; i < form.elements.length; i++) {
+        if (form.elements[i].checked == true ) { 
+            valid++; 
+        } 
+    } 
+    if (valid == form.elements.length/2) {
+        return true;
+    } else {
+        alert ( "Please answer this question." );
+        return false; 
+    }
+}; 
+
     function ValidateText(field)
     {
         valid = true;
@@ -89,8 +104,8 @@
     <div class="slide" id="practice">
         <br><br>
         <p align="center"> Please read the following scenarios and answer some questions about them. </p><br>
-        <form name="practice_questions"> <!--form 0-->
         <table id="practice_tab" align = "center" cellspacing="20"><tr>
+        <form name="practice_questions"> <!--form 0-->
         <td align="center">
         <col width="350">
           <tr>
@@ -138,7 +153,7 @@
         
         <p align="center"> Now you will read two stories and answer some questions about them.<br> 
             Please click 'Next' to read the first story!</p>
-        <br><table align="center"><tr><td> <button type="button" onClick="this.blur(); if (ValidateForm(document.practice_questions)) {experiment.slide001()}">Next</button> </td> </tr>
+        <br><table align="center"><tr><td> <button type="button" onClick="this.blur(); if (ValidateComplexForm(document.practice_questions)) {experiment.slide001()}">Next</button> </td> </tr>
       </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
   	  </table>
     </div>
@@ -247,7 +262,7 @@
         </table>
         </form>
       <table align="center"><tr><td> <button type="button" onClick="this.blur(); if
-    (ValidateText(document.pretest1.pretest1_1answer) && ValidateText(document.pretest1.pretest1_2answer) && ValidateForm(document.test1)) {experiment.slide006()}">Next</button> </td> </tr>
+    (ValidateText(document.pretest1.pretest1_1answer) && ValidateText(document.pretest1.pretest1_2answer) && ValidateComplexForm(document.test1)) {experiment.slide006()}">Next</button> </td> </tr>
       </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
   	  </table>
       <p class="additional"> Click 'Next' to read the next part of the story. </p>
@@ -356,7 +371,7 @@
         </table>
         </form>
       <table align="center"><tr><td> <button type="button" onClick="this.blur(); if
-    (ValidateText(document.pretest2.pretest2_1answer) && ValidateText(document.pretest2.pretest2_2answer) && ValidateForm(document.test2)) {experiment.slide011()}">Next</button> </td> </tr>
+    (ValidateText(document.pretest2.pretest2_1answer) && ValidateText(document.pretest2.pretest2_2answer) && ValidateComplexForm(document.test2)) {experiment.slide011()}">Next</button> </td> </tr>
       </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
   	  </table>
       <p class="additional"> Click 'Next' to read the next part of the story. </p>
@@ -501,7 +516,7 @@
         </table>
         </form>
       <table align="center"><tr><td> <button type="button" onClick="this.blur(); if
-    (ValidateText(document.pretest3.pretest3_1answer) && ValidateText(document.pretest3.pretest3_2answer) && ValidateForm(document.test3)) {experiment.slide018()}">Next</button> </td> </tr>
+    (ValidateText(document.pretest3.pretest3_1answer) && ValidateText(document.pretest3.pretest3_2answer) && ValidateComplexForm(document.test3)) {experiment.slide018()}">Next</button> </td> </tr>
       </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
   	  </table>
       <p class="additional"> Click 'Next' to read the next part of the story. </p>
@@ -610,7 +625,7 @@
         </table>
         </form>
       <table align="center"><tr><td> <button type="button" onClick="this.blur(); if
-    (ValidateText(document.pretest4.pretest4_1answer) && ValidateText(document.pretest4.pretest4_2answer) && ValidateForm(document.test4)) {experiment.slide023()}">Next</button> </td> </tr>
+    (ValidateText(document.pretest4.pretest4_1answer) && ValidateText(document.pretest4.pretest4_2answer) && ValidateComplexForm(document.test4)) {experiment.slide023()}">Next</button> </td> </tr>
       </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
   	  </table>
       <p class="additional"> Click 'Next' to read the next part of the story. </p>

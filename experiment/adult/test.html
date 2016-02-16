@@ -1,0 +1,25 @@
+<html>
+    <head>
+    <title> Using the elements.length property of the Form object</title>
+    </head>
+    <body>
+    <script language="JavaScript">
+    <!--
+    function getNum(){
+         var numOfElements = document.form1.elements.length;
+         alert("The number of elements in this document are:" + numOfElements);
+    }
+    -->
+    </script>
+    <form name="form1">
+    Dummy text box:
+    <input type="text" name="textbox1" size="25">
+    <br>
+    <input type="button" value="Dummy Button">
+    <input type="text" size="20" name="Sample">
+    <br><br>
+    Click on the button to get the number of elements in this form.
+    <input type="button" value="Get Elements" onClick='getNum()'>
+    </form>
+    </body>
+    </html>
