@@ -98,18 +98,12 @@ This stuff will vary by experiment.
 	height: 150px;
 }
 
-#elmo{
-  width: 130px;
-	height: 160px;
-}
-
-#no_elmo{
-  width: 130px;
-  height: 160px;
-}
-
 .additional{
   font-size: 0.8em;
   text-align: center;
   margin-top: 0em;
+}
+
+.border-top {
+  border-top: solid 1px black;
 }

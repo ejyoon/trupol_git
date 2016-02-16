@@ -90,15 +90,17 @@
         <br><br>
         <p align="center"> Please read the following scenarios and answer some questions about them. </p><br>
         <form name="practice_questions"> <!--form 0-->
-        <p align="center">Nicole gave her friend a gift.</p><br>
-        <table align = "center"><tr>
+        <table id="practice_tab" align = "center" cellspacing="20"><tr>
         <td align="center">
+        <col width="350">
           <tr>
+            <td>   </td>
             <td>   </td>
             <td>Yes</td>
             <td>No</td>    
           </tr>
           <tr>            
+            <th rowspan="2"><p><b>Nicole gave her friend a gift.</b></p></th>
             <td><p>Was Nicole nice?</p></td>
             <td align="center"><input type="radio" id="p1_1" name="practice1_nice" value = "1"></td>
             <td align="center"><input type="radio" id="p1_1" name="practice1_nice" value = "0"></td>
@@ -108,16 +110,8 @@
             <td align="center"><input type="radio" id="p1_2" name="practice1_mean" value = "1"></td>
             <td align="center"><input type="radio" id="p1_2" name="practice1_mean" value = "0"></td>
           </tr>
-        </table><br><br><br>
-        <p align="center">James hit his friend.</p><br>
-        <table align = "center"><tr>
-        <td align="center">
-          <tr>
-            <td>   </td>
-            <td>Yes</td>
-            <td>No</td>    
-          </tr>
-          <tr>            
+          <tr class="border-top">            
+            <th rowspan="2"><p><b>James hit his friend.</b></p></th>
             <td><p>Was James nice?</p></td>
             <td align="center"><input type="radio" id="p2_1" name="practice2_nice" value = "1"></td>
             <td align="center"><input type="radio" id="p2_1" name="practice2_nice" value = "0"></td>
@@ -127,37 +121,23 @@
             <td align="center"><input type="radio" id="p2_2" name="practice2_mean" value = "1"></td>
             <td align="center"><input type="radio" id="p2_2" name="practice2_mean" value = "0"></td>
           </tr>
-        </table><br><br><br>
-        <p align="center">Kyle broke his mom's vase, and he told his mom the truth that he broke it.</p><br>
-        <table align = "center"><tr>
-        <td align="center">
-          <tr>
-            <td>   </td>
-            <td>Yes</td>
-            <td>No</td>    
-          </tr>
-          <tr>            
+          <tr class="border-top">
+            <th><p><b>Kyle broke his mom's vase, and he told his mom the truth that he broke it.</b></p></th>
             <td><p>Was Kyle telling the truth?</p></td>
             <td align="center"><input type="radio" id="p3" name="practice3_truth" value = "1"></td>
             <td align="center"><input type="radio" id="p3" name="practice3_truth" value = "0"></td>
           </tr>
-        </table><br><br><br>
-        <p align="center">Pam ate five cookies, but Pam told her mom a lie that she didn't eat any cookie.</p><br>
-        <table align = "center"><tr>
-        <td align="center">
-          <tr>
-            <td>   </td>
-            <td>Yes</td>
-            <td>No</td>    
-          </tr>
-          <tr>            
+          <tr class="border-top">            
+            <th><p><b>Pam ate five cookies, but Pam told her mom a lie that she didn't eat any cookies.</b></p></th>
             <td><p>Was Pam telling the truth?</p></td>
             <td align="center"><input type="radio" id="p4" name="practice4_truth" value = "1"></td>
             <td align="center"><input type="radio" id="p4" name="practice4_truth" value = "0"></td>
           </tr>
-        </table><br><br><br>
+       </table><br><br><br>
         </form>
-        <p align="center"> Now you will read two stories and answer some questions about them.<br> Please click 'Next' to read the first story!</p>
+        
+        <p align="center"> Now you will read two stories and answer some questions about them.<br> 
+            Please click 'Next' to read the first story!</p>
         <br><table align="center"><tr><td> <button type="button" onClick="this.blur(); if (ValidateForm(document.practice_questions)) {experiment.slide001()}">Next</button> </td> </tr>
       </td></tr><tr><td align="center"><div id = "counter"></div> </td> </tr>
   	  </table>
