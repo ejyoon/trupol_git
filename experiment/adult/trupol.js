@@ -89,13 +89,17 @@ function getRadioCheckedValue(formNum, radio_name)
 
 // ---------------- PARAMETERS ------------------
 var filename = "EJY_trupol"
-var condCounts = "1,20;2,20;" // FIXME
-var xmlHttp = null;
-xmlHttp = new XMLHttpRequest(); 
-xmlHttp.open( "GET", "http://langcog.stanford.edu/cgi-bin/subject_equalizer/maker_getter.php?conds=" + condCounts + "&filename=" + filename, false );
-xmlHttp.send( null );
-//var cond = xmlHttp.responseText; // For actual experimental runs
+//var condCounts = "1,20;2,20;3,20;4,20" // FIXME
+//var xmlHttp = null;
+//xmlHttp = new XMLHttpRequest(); 
+//xmlHttp.open( "GET", "https://langcog.stanford.edu/cgi-bin/subject_equalizer/maker_getter.php?conds=" + condCounts + "&filename=" + filename, false );
+//xmlHttp.send( null );
+//var list = xmlHttp.responseText; // For actual experimental runs
 var list = random(4)+1; // For testing only FIXME
+
+if(list == 1) {
+    var list = random(4)+1;
+}
 //var list = 3;
 
 // ---------------- CONTROL FLOW ------------------
@@ -558,10 +562,10 @@ experiment.data.language.push(document.getElementById("homelang").value);	experi
         setTimeout(function () {
 
             //Decrement  		
-            var xmlHttp = null;
-            xmlHttp = new XMLHttpRequest();
-            xmlHttp.open("GET", "http://langcog.stanford.edu/cgi-bin/subject_equalizer/decrementer.php?filename=" + filename + "&to_decrement=" + cond, false);
-            xmlHttp.send(null);
+//            var xmlHttp = null;
+//            xmlHttp = new XMLHttpRequest();
+//            xmlHttp.open("GET", "https://langcog.stanford.edu/cgi-bin/subject_equalizer/decrementer.php?filename=" + filename + "&to_decrement=" + cond, false);
+//            xmlHttp.send(null);
 
             turk.submit(experiment.data);
         }, 1500);

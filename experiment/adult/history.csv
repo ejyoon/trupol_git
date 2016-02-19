@@ -1,0 +1,4 @@
+Time,Action,Data
+2016/02/16 13:25:57,Create,"{u'description': u""A simple task of reading a picture book and judging characters' actions (takes ~4 minutes)"", u'title': u'Thinking about picture book characters', u'url': u'https://langcog.stanford.edu/expts/EJY/trupol/adult/trupol.html', u'assignment_duration': u'1 hour', u'qualifications': {u'location': u'US', u'approval_percentage': 85}, u'frame_height': 450, u'experimenter': u'Erica Yoon', u'keywords': u'Picture book, fun, characters, conversation, meaning, goals', u'auto_approval_delay': u'1 hour', u'reward': 0.5, u'server_log_path': u'http://langcog.stanford.edu/cgi-bin/cosub/location.php'}"
+2016/02/16 16:45:22,Add,30 assignments
+2016/02/18 20:01:32,Add,15 assignments
