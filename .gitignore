@@ -4,3 +4,9 @@
 *.json
 
 admin/yoon_dissertation_proposal.pdf
+
+data/adult/rsconnect/documents/trupol_adult.Rmd/rpubs.com/rpubs/Publish Document.dcf
+
+*.key
+
+history.csv
