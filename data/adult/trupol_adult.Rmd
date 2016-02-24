@@ -13,6 +13,7 @@ library(tidyr)
 library(langcog)
 #source("/Users/ericang/Documents/Research/trupol/data/version 1/helper/useful.R")
 
+# trupol adult US
 raw.data.path <- "/Users/ericang/Documents/Research/trupol_GIT/experiment/adult/production-results/"
 
 ## LOOP TO READ IN FILES
@@ -34,15 +35,48 @@ for (file.name in files) {
   all.data <- rbind(all.data, jso1)
 }
 
+us <- all.data
+
+# trupol adult India
+all.data <- data.frame()
+raw.data.path <- "/Users/ericang/Documents/Research/trupol_GIT/experiment/adult_india/production-results/"
+
+## LOOP TO READ IN FILES
+files <- dir(raw.data.path,pattern="*.json")
+
+for (file.name in files) {
+  
+  ## these are the two functions that are most meaningful
+  json_file <- readLines(paste(raw.data.path,file.name,sep=""))
+  json_file_str = paste(json_file, collapse = "")
+  json_file_str = gsub(",}", "}", json_file_str)
+  jso = jsonlite::fromJSON(json_file_str)
+  jso$answers$data$people <- NULL
+  jso1 <- data.frame(jso)
+  jso1$subid <- substring(file.name, 1, 6)
+  
+  ## now here's where data get bound together
+  all.data <- rbind(all.data, jso1)
+}
+
+all.data <- all.data %>% 
+  select(-answers.data.region, -answers.data.religion)
+
+all.data <- rbind(all.data, us)
+
+# how many got practice Q's right?
+practice <- all.data %>% filter(answers.data.site == "India") %>% select(answers.data.practice1_mean, answers.data.practice1_nice, answers.data.practice2_mean, answers.data.practice2_nice, answers.data.practice3_truth, answers.data.practice4_truth)
+
 d <- all.data %>%
-  select(subid, answers.data.age, answers.data.order, answers.data.cond, answers.data.practice1_mean, answers.data.practice1_nice, answers.data.practice2_mean, answers.data.practice2_nice, answers.data.practice3_truth, answers.data.practice4_truth, answers.data.trial1_2_play, answers.data.trial3_4_play, answers.data.trial1_nice, answers.data.trial2_nice, answers.data.trial3_nice, answers.data.trial4_nice, answers.data.trial1_mean, answers.data.trial2_mean, answers.data.trial3_mean, answers.data.trial4_mean, answers.data.trial1_truth, answers.data.trial2_truth, answers.data.trial3_truth, answers.data.trial4_truth) %>%
-  filter(answers.data.practice1_mean == "0" &
-           answers.data.practice1_nice == "1" &
-           answers.data.practice2_mean == "1" &
+  select(subid, answers.data.site, answers.data.age, answers.data.order, answers.data.cond, answers.data.practice1_mean, answers.data.practice1_nice, answers.data.practice2_mean, answers.data.practice2_nice, answers.data.practice3_truth, answers.data.practice4_truth, answers.data.trial1_2_play, answers.data.trial3_4_play, answers.data.trial1_nice, answers.data.trial2_nice, answers.data.trial3_nice, answers.data.trial4_nice, answers.data.trial1_mean, answers.data.trial2_mean, answers.data.trial3_mean, answers.data.trial4_mean, answers.data.trial1_truth, answers.data.trial2_truth, answers.data.trial3_truth, answers.data.trial4_truth) %>%
+  filter(answers.data.practice1_nice == "1" &
+            answers.data.practice1_mean == "0" &
+            answers.data.practice2_mean == "1" &
            answers.data.practice2_nice == "0" &
            answers.data.practice3_truth == "1" &
            answers.data.practice4_truth == "0") %>%
   mutate(subid = as.factor(subid),
+         site = as.factor(answers.data.site),
          order = as.factor(answers.data.order),
          cond = as.factor(answers.data.cond),
          age = as.factor(answers.data.age),
@@ -61,11 +95,11 @@ d <- all.data %>%
          trial3_truth = as.factor(answers.data.trial3_truth),
          trial4_truth = as.factor(answers.data.trial4_truth)
          ) %>%
-  select(subid, age, cond, order, trial1_2_play, trial3_4_play, trial1_nice, trial2_nice, trial3_nice, trial4_nice, trial1_mean, trial2_mean, trial3_mean, trial4_mean, trial1_truth, trial2_truth, trial3_truth, trial4_truth)
+  select(subid, site, age, cond, order, trial1_2_play, trial3_4_play, trial1_nice, trial2_nice, trial3_nice, trial4_nice, trial1_mean, trial2_mean, trial3_mean, trial4_mean, trial1_truth, trial2_truth, trial3_truth, trial4_truth)
 
 # reshape data
 d <- d %>%
-  gather("q", "answer", 5:18)
+  gather("q", "answer", 6:19)
 
 # add columns to categorize vars
 #levels(d[d$cond == 2,]$q) <- c("trial3_4_play", "trial1_2_play", "trial3_nice",   "trial4_nice",   "trial1_nice",  
@@ -111,6 +145,7 @@ d1_1 <- d %>%
 
 d1 <- rbind(d1_0, d1_1)
 
+d1$site <- as.factor(d1$site)
 d1$age <- as.factor(as.character(d1$age))
 d1$polite <- as.factor(as.character(d1$polite))
 d1$q_kind <- as.factor(as.character(d1$q_kind))
@@ -122,6 +157,13 @@ d1$answer <- as.numeric(as.character(d1$answer))
 
 ```
 
+```{r count_subj}
+subj <- d1 %>%
+  distinct(subid) %>%
+  group_by(site, cond, order) %>%
+  summarise(count = n())
+```
+
 # correct responses on eval and play questions
 
 play: "who do you want to play with?"
@@ -130,11 +172,11 @@ play: "who do you want to play with?"
 # plot: eval and play
 ms <- d1 %>%
   filter(q_kind == "play") %>%
-  group_by(cond, subid) %>%
+  group_by(site, cond, subid) %>%
   summarise(
     answer = mean(answer)
   ) %>%
-  group_by(cond) %>%
+  group_by(site, cond) %>%
   multi_boot_standard(column = "answer") %>%
   mutate(answer = mean)
 ```
@@ -146,6 +188,7 @@ x-axis: cond
 y-axis: answer; 0 = incorrect, 1 = correct
 
 ```{r}
+levels(ms$cond) # check
 levels(ms$cond) <- c("experimental", "control")
 ms$cond <- relevel(ms$cond, ref="control")
 
@@ -153,7 +196,10 @@ p <- ggplot(ms, aes(x=cond, y=answer, fill=cond))
 p + 
   geom_bar(position = "dodge", stat = "identity") +
   geom_errorbar(aes(ymin=ci_lower,ymax=ci_upper,width=.1)) +
-  ggtitle("Proportion saying 'honest speaker' on play questions")
+  ggtitle("Proportion saying 'honest speaker' on play questions") +
+  facet_grid(.~site) +
+  geom_hline(yintercept=.50,lty=4) 
+
 ```
 
 # nice/mean/truth-telling rating
@@ -162,11 +208,11 @@ p +
 # plot: niceness
 ms <- d1 %>%
   filter(q_kind == "niceness" | q_kind == "meanness" | q_kind == "truth-telling") %>%
-  group_by(cond, polite, q_kind, subid) %>%
+  group_by(site, cond, polite, q_kind, subid) %>%
   summarize(
     answer = mean(answer)
   ) %>%
-  group_by(cond, polite, q_kind) %>%
+  group_by(site, cond, polite, q_kind) %>%
   multi_boot_standard(column = "answer") %>%
   mutate(answer = mean)
 ```
@@ -174,14 +220,16 @@ ms <- d1 %>%
 ## barplot
 
 ```{r fig.width=10}
+levels(ms$cond)
 levels(ms$cond) <- c("experimental", "control")
 ms$cond <- relevel(ms$cond, ref="control")
 p <- ggplot(subset(ms, answer!="NA"), 
             aes(x=cond, y=answer, fill=polite))
 p + 
   geom_bar(position=position_dodge(), stat = "identity") +
-  facet_grid(.~q_kind) +
+  facet_grid(site~q_kind) +
   geom_errorbar(position=position_dodge(.9), aes(ymin=ci_lower,ymax=ci_upper,width=.1)) +
-  ggtitle("Proportion \"yes\"")
+  ggtitle("Proportion \"yes\"") +
+  geom_hline(yintercept=.50,lty=4) 
 ```
 
