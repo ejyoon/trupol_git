@@ -160,6 +160,9 @@ for (i=10;i<25;i++) {
     images[i].src =  "slides/" + cond + order + ".0" + i + ".jpeg"
 } 
 
+var currentdate = new Date()
+var month = currentdate.getMonth() +  1
+
 
 showSlide("instructions");
 
@@ -167,14 +170,18 @@ showSlide("instructions");
 var experiment = {
     
     data:{
-    site: "India", //fixme for other sites
+    subid: [],
+    email: [],
+    time: [],
+    site: "Korea", //fixme for other sites
     experiment: "trupol",
     list: list,
     cond: cond,
     order: order,
     age: "adult",
+    age_num: [],
     language: [],
-    region: [],
+    abroad: [],
     religion: [],
     expt_aim: [],
     expt_gen: [],
@@ -217,6 +224,22 @@ var experiment = {
     trial3_4_play: [],   
     trial3_4_playWhy: [],   
     },
+
+    
+    confirm: function () {
+
+            if (document.getElementById("email").value) {
+            experiment.data.email.push(document.getElementById("email").value);
+            experiment.data.subid.push(Math.floor((Math.random() * 1000000) + 1));
+            experiment.data.time.push(currentdate.getDate() + "-" + month + " " + 
+                currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds());
+                
+            
+            experiment.instructions();
+        } else {
+			$("#emailfield").html('<font color="red">Please answer this question.</font>');  
+        }
+    },
     
   instructions:function() {
     showSlide('instructions2')
@@ -227,6 +250,8 @@ var experiment = {
     showSlide('practice')        
     },
     
+    
+
 //////////// SPEAKER 1 //////////
     
     slide001: function() {
@@ -294,8 +319,10 @@ var experiment = {
 
 //////////// SPEAKER 2 //////////
     slide006: function() {
-        experiment.data.trial1_SWhy.push(document.getElementById("pretest1_1answer").value);  
-experiment.data.trial1_LFeel.push(document.getElementById("pretest1_2answer").value);           
+        var trial1_SWhy = document.getElementById("pretest1_1answer").value;
+        var trial1_LFeel = document.getElementById("pretest1_2answer").value;
+        experiment.data.trial1_SWhy.push(trial1_SWhy);  
+        experiment.data.trial1_LFeel.push(trial1_LFeel);           
     if(order == 1) {
         var test1nice = getRadioCheckedValue(4, "test1_item1");
         var test1mean = getRadioCheckedValue(4, "test1_item2");
@@ -559,14 +586,16 @@ experiment.data.trial3_4_playWhy.push(compare_why);
         end: function () {
 
             experiment.data.language.push(document.getElementById("homelang").value);	
+            experiment.data.language.push(document.getElementById("age_num").value);	
+            experiment.data.language.push(document.getElementById("abroad").value);	
             experiment.data.expt_aim.push(document.getElementById("expthoughts").value);		
             experiment.data.expt_gen.push(document.getElementById("expcomments").value);
             
-            if(getRadioCheckedValue(21, "region") == "other" || getRadioCheckedValue(21, "region") == "") {
-                experiment.data.region.push(document.getElementById("region_other").value);
-            } else {
-                experiment.data.region.push(getRadioCheckedValue(21, "region"));
-            }
+//            if(getRadioCheckedValue(21, "region") == "other" || getRadioCheckedValue(21, "region") == "") {
+//                experiment.data.region.push(document.getElementById("region_other").value);
+//            } else {
+//                experiment.data.region.push(getRadioCheckedValue(21, "region"));
+//            }
             
             if(getRadioCheckedValue(21, "religion") == "other" || getRadioCheckedValue(21, "religion") == "") {
                 experiment.data.religion.push(document.getElementById("religion_other").value);
@@ -576,7 +605,33 @@ experiment.data.trial3_4_playWhy.push(compare_why);
 
             
         showSlide("finished");
-        setTimeout(function () {
+        var dataforTrial = experiment.data.email  + "," + experiment.data.subid + ","
+        + experiment.data.time + "," + experiment.data.site  + "," 
+        + experiment.data.cond + "," + experiment.data.order + "," 
+        + experiment.data.practice1_nice + "," + experiment.data.practice1_mean + "," 
+        + experiment.data.practice2_nice + "," + experiment.data.practice2_mean + "," 
+        + experiment.data.practice3_truth + "," + experiment.data.practice4_truth + "," 
+        + experiment.data.trial1_comp_like + "," + experiment.data.trial1_comp_tell + "," 
+        + experiment.data.trial1_SWhy + "," + experiment.data.trial1_LFeel + "," 
+        + experiment.data.trial1_nice + "," + experiment.data.trial1_mean + "," + experiment.data.trial1_truth + "," 
+        + experiment.data.trial2_comp_like + "," + experiment.data.trial2_comp_tell + "," 
+        + experiment.data.trial2_SWhy + "," + experiment.data.trial2_LFeel + "," 
+        + experiment.data.trial2_nice + "," + experiment.data.trial2_mean + "," + experiment.data.trial2_truth + "," 
+        + experiment.data.trial1_2_play + "," + experiment.data.trial1_2_playWhy + "," 
+        + experiment.data.trial3_comp_like + "," + experiment.data.trial3_comp_tell + "," 
+        + experiment.data.trial3_SWhy + "," + experiment.data.trial3_LFeel + "," 
+        + experiment.data.trial3_nice + "," + experiment.data.trial3_mean + "," + experiment.data.trial3_truth + "," 
+        + experiment.data.trial4_comp_like + "," + experiment.data.trial4_comp_tell + "," 
+        + experiment.data.trial4_SWhy + "," + experiment.data.trial4_LFeel + "," 
+        + experiment.data.trial4_nice + "," + experiment.data.trial4_mean + "," + experiment.data.trial4_truth + "," 
+        + experiment.data.trial3_4_play + "," + experiment.data.trial3_4_playWhy + "," 
+        + experiment.data.language + "," + experiment.data.expt_aim + "," 
+        + experiment.data.expt_gen + "," + experiment.data.religion + "," 
+        + experiment.data.age_num + "," + experiment.data.abroad
+        + "\n";
+        $.post("https://langcog.stanford.edu/cgi-bin/EJY/trupol/trupolstudysave.php", {postresult_string : dataforTrial});	
+
+//        setTimeout(function () {
 
             //Decrement  		
 //            var xmlHttp = null;
@@ -584,8 +639,8 @@ experiment.data.trial3_4_playWhy.push(compare_why);
 //            xmlHttp.open("GET", "https://langcog.stanford.edu/cgi-bin/subject_equalizer/decrementer.php?filename=" + filename + "&to_decrement=" + cond, false);
 //            xmlHttp.send(null);
 
-            turk.submit(experiment.data);
-        }, 1500);
+//            turk.submit(experiment.data);
+//        }, 1500);
     },
 }
 

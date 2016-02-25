@@ -1,23 +1,38 @@
 <html>
   <head>
-    <title>Rate people's interactions</title>       
+    <title>이야기 속 인물 평가하기</title>       
     <script src="jquery-1.11.2.min.js"></script>
     <script src="mmturkey-0.6.js"></script>
     <link rel="stylesheet" href="style.css" /> <!--calling css file for style-->
     <meta name="exp0" content="initial-scale=1.0" /> 
-  </head>
+    <meta charset="utf-8">
+</head>
 
   <body>
   
     <div class="slide" id="instructions"> <!--Make sure class and id are specified, these are kinds of names that Javascript identifies each section; 'div function section-izes each part that you want to be considered separately-->
   <img src="images/stanford.png" alt="Stanford University">
   <p id='logo-text'>Stanford Language and Cognition Lab</p>
-  <p class="block-text">In this experiment, you will read interactions between people. Your job is to judge what their actions or comments mean. You will see something they did or said, and a possible interpretation of that. Then you will be asked to indicate how likely it is that the interpretation is true.
+  <p class="block-text">
+            본 연구는 한국인 참가자 대상입니다. 
+            간단한 영어 이야기를 읽고 이야기 인물들에 대해서 평가하는 내용입니다.
+            끝까지 진행하실 경우 실험자에게 이메일 정보가 전달되며 참가 사례를 받으실 수 있습니다.
   </p>
+        <br><br><b>This study is for Korean participants only.</b>
+
+        <br><br><br>
+        <p class="block-text_email">이메일 주소를 입력하여 주십시오.</p>
+        
+        <div>
+        <input type="string" name="email" id="email" size="30">
+        </div>
+        
+        <table cellspacing="2" align="center"><tr> <td id="emailfield"></td></tr></table>
+
       
-      <button type="button" onClick="this.blur(); experiment.instructions()">Start</button> <!-- This puts a button with text 'Start', which upon participant's click carries out the functions this.blur() and experiment.initial1(), which is specified in js scripts in var experiment and next: function-->
+      <button type="button" onClick="this.blur(); experiment.confirm()">Start</button> <!-- This puts a button with text 'Start', which upon participant's click carries out the functions this.blur() and experiment.initial1(), which is specified in js scripts in var experiment and next: function-->
     
-  <p class="block-text"><br> <b> Note: you won't be able to preview this HIT before accepting it because it's so short. </b></p>
+<!--  <p class="block-text"><br> <b> Note: you won't be able to preview this HIT before accepting it because it's so short. </b></p>-->
   
   <p class="block-text" id="legal">By answering the
   following questions, you are participating in a study being performed by
@@ -29,10 +44,7 @@
   following questions. You may decline further participation, at any time, 
   without adverse consequences. Your anonymity is assured; the researchers 
   who have requested your participation will not receive any personal information 
-  about you. Note however that we have recently been made aware that your public 
-  Amazon.com profile can be accessed via your worker ID if you do not choose 
-  to opt out. If you would like to opt out of this feature, you may follow instructions available 
-  <a href="http://www.amazon.com/gp/help/customer/display.html?nodeId=16465241">here</a>.</p>
+  about you.</p>
 </div>
 
       
@@ -92,7 +104,10 @@
     </script>
 
     <div class="slide" id="instructions2">
-        <br><br><p class="block-text"> In this task, you will read a children's story, and will be asked to think about the characters in the story. Please tell us what YOU think about these characters (not what another person or a child would think!)<br><br>
+        <br><br><p class="block-text"> In this task, you will read a children's story, and will be asked to think about the characters in the story. Please tell us what YOU think about these characters (not what another person or a child would think!)
+        <br><br>The task will take approx. 5-10 minutes. 
+        For your participation, you will receive a $1 gift credit on Amazon.com. 
+        <br><br>
         First, you will answer some practice questions.</p>
 
         <table align="center"><tr><td> <button type="button" onClick="this.blur(); experiment.practice()">Next</button> </td> </tr>
@@ -664,28 +679,32 @@
    <p>
 	<input type="text" id="homelang" name="lg" style="width:40%" value=""></textarea>
    </p>
+	<p> What is your age? </p>
+   <p>
+	<input type="text" id="age_num" name="old" style="width:40%" value=""></textarea>
+   </p>
+	<p> How long (in years) have you spent time abroad, outside of Korea? </p>
+   <p>
+	<input type="text" id="abroad" name="year" style="width:40%" value=""></textarea>
+   </p>
 	<p> What is your religion? </p>
    <p>
     <table width="500" cellspacing="0" cellpadding="0" border="0" class="text-center">
         <tr>
-            <td><input type="radio" name="religion" value="hindu" /></td>
-            <td><span>Hinduism</span></td>
+            <td><input type="radio" name="religion" value="protestant" /></td>
+            <td><span>Christianity (prostestantism)</span></td>
         </tr>
         <tr>
-            <td><input type="radio" name="religion" value="islam" /></td>
-            <td><span>Islam</span></td>
-        </tr>
-        <tr>
-            <td><input type="radio" name="religion" value="christian" /></td>
-            <td><span>Christianity</span></td>
-        </tr>
-        <tr>
-            <td><input type="radio" name="religion" value="sikh" /></td>
-            <td><span>Sikhism</span></td>
+            <td><input type="radio" name="religion" value="catholic" /></td>
+            <td><span>Christianity (catholicism)</span></td>
         </tr>
         <tr>
             <td><input type="radio" name="religion" value="buddh" /></td>
             <td><span>Buddhism</span></td>
+        </tr>
+        <tr>
+            <td><input type="radio" name="religion" value="none" /></td>
+            <td><span>No religion</span></td>
         </tr>
         <tr>
             <td><input type="radio" name="religion" value="other" /></td>
@@ -693,33 +712,6 @@
         </tr>
     </table>
    </p>
-	<p> Which region of India do you live in? (the largest city in each region is indicated in brackets for your reference)</p>
-    <table width="500" cellspacing="0" cellpadding="0" border="0" class="text-center">
-        <tr>
-            <td><input type="radio" name="region" value="east" /></td>
-            <td><span>East India (Kolkata)</span></td>
-        </tr>
-        <tr>
-            <td><input type="radio" name="region" value="north" /></td>
-            <td><span>North India (Delhi)</span></td>
-        </tr>
-        <tr>
-            <td><input type="radio" name="region" value="northeast" /></td>
-            <td><span>Northeast India (Guwahati)</span></td>
-        </tr>
-        <tr>
-            <td><input type="radio" name="region" value="south" /></td>
-            <td><span>South India (Chennai)</span></td>
-        </tr>
-        <tr>
-            <td><input type="radio" name="region" value="west" /></td>
-            <td><span>West India (Mumbai)</span></td>
-        </tr>
-        <tr>
-            <td><input type="radio" name="region" value="other" /></td>
-            <td><span>Other  <input type="text" id="region_other" value=""/></span></td>
-        </tr>
-</table>
    <p> What do you think this experiment was about? </p>
    <p>
 	<textarea type="text" id="expthoughts" style="width:100%" name="expaim"></textarea>
@@ -736,7 +728,9 @@
 </div>
 
 <div class="slide" id="finished">
-      You're finished - thanks for participating! Submitting to Mechanical Turk...
+      You're finished - thanks for participating!
+      <br><br>참가해주셔서 감사합니다! 며칠 이내로 참가 사례에 대한 이메일을 받으실 수 있습니다. 
+        <br>궁금한 점이 있으시면 ejyoon@stanford.edu로 문의바랍니다.
       <div id="vars"> </div> <!--dynamically built in javascript-->
     </div>
 
