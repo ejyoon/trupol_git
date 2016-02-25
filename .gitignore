@@ -10,3 +10,10 @@ data/adult/rsconnect/documents/trupol_adult.Rmd/rpubs.com/rpubs/Publish Document
 *.key
 
 history.csv
+*.key
+
+*.key
+
+experiment/adult/history.csv
+
+experiment/adult/slides/keynote/cont2.key
