@@ -32,10 +32,105 @@ levels(d1$site) <- c("India", "US")
 d1 <- d1 %>% filter(age != "4")
 ```
 
-# correct responses on play questions
+# nice/mean/truth-telling rating
 
-play: "who do you want to play with?"
-(old) eval: "whose snack do you think is tastier (given the same utterance)?"
+```{r, fig.width=8}
+### Experimental condition
+ms <- d1 %>%
+  filter(q_kind == "niceness" | q_kind == "meanness" | q_kind == "truth-telling") %>%
+  filter(!is.na(age)) %>%
+  filter(cond == "exp") %>%
+  mutate(answer = as.numeric(as.character(answer))) %>%
+  group_by(site, age, polite, q_kind, subid) %>%
+  summarize(
+    answer = mean(answer, na.rm=TRUE)
+  ) %>%
+  group_by(site, age, polite, q_kind) %>%
+  multi_boot_standard(column = "answer", na.rm=TRUE) %>%
+  mutate(answer = mean)
+
+# levels(ms$cond) <- c("control", "experimental")
+levels(ms$site) <- c("India", "US")
+levels(ms$polite) <- c("honest", "polite (dishonest)")
+ms$q_kind <- factor(ms$q_kind, levels = c("truth-telling", "niceness", "meanness"))
+ms$site <- relevel(ms$site, ref="US")
+p <- ggplot(subset(ms, answer!="NA"), 
+            aes(x=age, y=answer, fill=polite))
+p + 
+  geom_bar(position=position_dodge(), stat = "identity") +
+  facet_grid(q_kind~site) +
+  geom_errorbar(position=position_dodge(.9), aes(ymin=ci_lower,ymax=ci_upper,width=.1)) +
+  ggtitle("Judgments for honest vs. polite speaker") +
+  geom_hline(yintercept=.50,lty=4) +
+  ylab("Proportion \"yes\"") +
+  scale_fill_discrete(guide = guide_legend(title = "speaker")) 
+
+# control condition
+ms <- d1 %>%
+  filter(q_kind == "niceness" | q_kind == "meanness" | q_kind == "truth-telling") %>%
+  filter(!is.na(age),
+         age!="4") %>%
+  filter(cond == "cont") %>%
+  mutate(answer = as.numeric(as.character(answer))) %>%
+  group_by(site, age, polite, q_kind, subid) %>%
+  summarize(
+    answer = mean(answer, na.rm=TRUE)
+  ) %>%
+  group_by(site, age, polite, q_kind) %>%
+  multi_boot_standard(column = "answer", na.rm=TRUE) %>%
+  mutate(answer = mean)
+
+# levels(ms$cond) <- c("control", "experimental")
+levels(ms$site) <- c("India", "US")
+levels(ms$polite) <- c("honest", "dishonest")
+ms$q_kind <- factor(ms$q_kind, levels = c("truth-telling", "niceness", "meanness"))
+ms$site <- relevel(ms$site, ref="US")
+p <- ggplot(subset(ms, answer!="NA"), 
+            aes(x=age, y=answer, fill=polite))
+p + 
+  geom_bar(position=position_dodge(), stat = "identity") +
+  facet_grid(q_kind~site) +
+  geom_errorbar(position=position_dodge(.9), aes(ymin=ci_lower,ymax=ci_upper,width=.1)) +
+  ggtitle("Honest vs. dishonest (for no reason) speaker") +
+  geom_hline(yintercept=.50,lty=4) +
+  ylab("Proportion \"yes\"") +
+  scale_fill_discrete(guide = guide_legend(title = "speaker")) 
+
+# us only, all cond
+ms <- d1 %>%
+  filter(q_kind == "niceness" | q_kind == "meanness" | q_kind == "truth-telling") %>%
+  filter(!is.na(age)) %>%
+  filter(site == "US") %>%
+  mutate(answer = as.numeric(as.character(answer))) %>%
+  group_by(cond, age, polite, q_kind, subid) %>%
+  summarize(
+    answer = mean(answer, na.rm=TRUE)
+  ) %>%
+  group_by(cond, age, polite, q_kind) %>%
+  multi_boot_standard(column = "answer", na.rm=TRUE) %>%
+  mutate(answer = mean)
+
+# levels(ms$cond) <- c("control", "experimental")
+levels(ms$polite) <- c("honest", "dishonest")
+ms$cond <- relevel(ms$cond, ref="exp")
+levels(ms$cond) <- c("dishonest for politeness", "dishonest for no reason")
+ms$q_kind <- factor(ms$q_kind, levels = c("truth-telling", "niceness", "meanness"))
+p <- ggplot(subset(ms, answer!="NA"), 
+            aes(x=age, y=answer, fill=polite))
+p + 
+  geom_bar(position=position_dodge(), stat = "identity") +
+  facet_grid(q_kind~cond) +
+  geom_errorbar(position=position_dodge(.9), aes(ymin=ci_lower,ymax=ci_upper,width=.1)) +
+  ggtitle("Judgments for honest vs. dishonest speaker (US)") +
+  geom_hline(yintercept=.50,lty=4) +
+  ylab("Proportion \"yes\"") +
+  scale_fill_discrete(guide = guide_legend(title = "speaker")) 
+
+```
+
+
+# who do you want to play with?
+
 
 ```{r, fig.width=10}
 ms <- d1 %>%
@@ -70,39 +165,6 @@ p +
 ```
 
 ```{r, fig.width=10}
-# only exp
-ms <- d1 %>%
-  filter(q_kind == "play",
-         cond == "exp",
-         age != "4") %>%
-  mutate(answer = as.numeric(as.character(answer))) %>%
-  group_by(site, age,subid) %>%
-  summarize(
-    answer = mean(answer, na.rm=TRUE)
-  ) %>%
-  group_by(site, age) %>%
-  multi_boot_standard(column = "answer", na.rm=TRUE) %>%
-  mutate(answer = mean) %>%
-  filter(age != "NA")
-
-levels(ms$site) <- c("India", "US")
-ms$site <- relevel(ms$site, ref="US")
-
-p <- ggplot(ms, aes(x=age, y=answer, fill=age))
-dodge <- position_dodge(width=0.9)
-p + 
-  geom_bar(position = dodge, stat = "identity") +
-  geom_errorbar(position=dodge,aes(ymin=ci_lower,ymax=ci_upper,width=.1)) +
-  facet_grid(.~site) +
-  ggtitle("Preferred speaker to play with (experimental cond)") +
-  geom_hline(yintercept=.50,lty=4) +
-  # guides(fill=FALSE) +
-  ylab("Proportion saying 'honest speaker'") +
-  xlab("age")
-
-```
-
-```{r, fig.width=10}
 ### experimental: jitter
 ms <- d1 %>%
   filter(q_kind == "play", 
@@ -128,153 +190,8 @@ p +
   ggtitle("Preferred speaker to play with in experimental condition") +
   ylab("preferred speaker") +
   scale_color_discrete(guide = "none")
-
-ms <- d1 %>%
-  filter(q_kind == "play", 
-         cond == "exp",
-         age != "4") %>%
-  mutate(answer = as.numeric(as.character(answer))) %>%
-  filter(age != "NA",
-         answer != "0.5",
-         !is.na(answer)) %>%
-  group_by(site, age, answer) %>%
-  summarize(count=n()) %>%
-  mutate(perc=count/sum(count)) %>%
-  ungroup() %>%
-  mutate(site = relevel(site, ref="US"))
-         # site = factor(site, labels = c("US", "India")))
- 
-ms$answer <- relevel(as.factor(ms$answer), ref="1")
-p <- ggplot(ms, aes(x=age, y=perc, fill=factor(answer, label=c("honest", "polite"))))
-p + 
-  geom_bar(stat="identity", width = 0.7) +
-  facet_grid(.~site) +
-  ggtitle("Preferred speaker to play with") +
-  scale_fill_discrete(guide = guide_legend(title = "Speaker")) +
-  ylab("proportion of responses") +
-  geom_hline(yintercept=.50,lty=4)
 ```
 
-# nice/mean/truth-telling rating
-
-```{r, fig.width=8}
-# plot: niceness
-ms <- d1 %>%
-  filter(q_kind == "niceness" | q_kind == "meanness" | q_kind == "truth-telling") %>%
-  filter(!is.na(age),
-         age!="4") %>%
-  filter(cond == "cont") %>%
-  mutate(answer = as.numeric(as.character(answer))) %>%
-  group_by(site, age, polite, q_kind, subid) %>%
-  summarize(
-    answer = mean(answer, na.rm=TRUE)
-  ) %>%
-  group_by(site, age, polite, q_kind) %>%
-  multi_boot_standard(column = "answer", na.rm=TRUE) %>%
-  mutate(answer = mean)
-
-# levels(ms$cond) <- c("control", "experimental")
-levels(ms$site) <- c("India", "US")
-levels(ms$polite) <- c("honest", "dishonest")
-ms$q_kind <- factor(ms$q_kind, levels = c("truth-telling", "niceness", "meanness"))
-ms$site <- relevel(ms$site, ref="US")
-p <- ggplot(subset(ms, answer!="NA"), 
-            aes(x=age, y=answer, fill=polite))
-p + 
-  geom_bar(position=position_dodge(), stat = "identity") +
-  facet_grid(q_kind~site) +
-  geom_errorbar(position=position_dodge(.9), aes(ymin=ci_lower,ymax=ci_upper,width=.1)) +
-  ggtitle("Honest vs. dishonest (for no reason) speaker") +
-  geom_hline(yintercept=.50,lty=4) +
-  ylab("Proportion \"yes\"") +
-  scale_fill_discrete(guide = guide_legend(title = "speaker")) 
-
-# us only
-p <- ggplot(subset(ms, answer!="NA" & site == "US"), 
-            aes(x=age, y=answer, fill=polite))
-p + 
-  geom_bar(position=position_dodge(), stat = "identity") +
-  facet_grid(q_kind~.) +
-  geom_errorbar(position=position_dodge(.9), aes(ymin=ci_lower,ymax=ci_upper,width=.1)) +
-  ggtitle("Honest vs. dishonest (for no reason) speaker") +
-  geom_hline(yintercept=.50,lty=4) +
-  ylab("Proportion \"yes\"") +
-  scale_fill_discrete(guide = guide_legend(title = "speaker")) 
-
-
-### Experimental condition
-ms <- d1 %>%
-  filter(q_kind == "niceness" | q_kind == "meanness" | q_kind == "truth-telling") %>%
-  filter(!is.na(age)) %>%
-  filter(cond == "exp") %>%
-  mutate(answer = as.numeric(as.character(answer))) %>%
-  group_by(site, age, polite, q_kind, subid) %>%
-  summarize(
-    answer = mean(answer, na.rm=TRUE)
-  ) %>%
-  group_by(site, age, polite, q_kind) %>%
-  multi_boot_standard(column = "answer", na.rm=TRUE) %>%
-  mutate(answer = mean)
-
-# levels(ms$cond) <- c("control", "experimental")
-levels(ms$site) <- c("India", "US")
-levels(ms$polite) <- c("honest", "polite (dishonest)")
-ms$q_kind <- factor(ms$q_kind, levels = c("truth-telling", "niceness", "meanness"))
-ms$site <- relevel(ms$site, ref="US")
-p <- ggplot(subset(ms, answer!="NA"), 
-            aes(x=age, y=answer, fill=polite))
-p + 
-  geom_bar(position=position_dodge(), stat = "identity") +
-  facet_grid(q_kind~site) +
-  geom_errorbar(position=position_dodge(.9), aes(ymin=ci_lower,ymax=ci_upper,width=.1)) +
-  ggtitle("Judgments for honest vs. polite speaker") +
-  geom_hline(yintercept=.50,lty=4) +
-  ylab("Proportion \"yes\"") +
-  scale_fill_discrete(guide = guide_legend(title = "speaker")) 
-
-# US only 
-p <- ggplot(subset(ms, answer!="NA" & site == "US"), 
-            aes(x=age, y=answer, fill=polite))
-p + 
-  geom_bar(position=position_dodge(), stat = "identity") +
-  facet_grid(q_kind~.) +
-  geom_errorbar(position=position_dodge(.9), aes(ymin=ci_lower,ymax=ci_upper,width=.1)) +
-  ggtitle("Judgments for honest vs. polite speaker (US)") +
-  geom_hline(yintercept=.50,lty=4) +
-  ylab("Proportion \"yes\"") +
-  scale_fill_discrete(guide = guide_legend(title = "speaker")) 
-
-# us only, all cond
-ms <- d1 %>%
-  filter(q_kind == "niceness" | q_kind == "meanness" | q_kind == "truth-telling") %>%
-  filter(!is.na(age)) %>%
-  filter(site == "US") %>%
-  mutate(answer = as.numeric(as.character(answer))) %>%
-  group_by(cond, age, polite, q_kind, subid) %>%
-  summarize(
-    answer = mean(answer, na.rm=TRUE)
-  ) %>%
-  group_by(cond, age, polite, q_kind) %>%
-  multi_boot_standard(column = "answer", na.rm=TRUE) %>%
-  mutate(answer = mean)
-
-# levels(ms$cond) <- c("control", "experimental")
-levels(ms$polite) <- c("honest", "dishonest")
-ms$cond <- relevel(ms$cond, ref="exp")
-levels(ms$cond) <- c("dishonest for politeness", "dishonest for no reason")
-ms$q_kind <- factor(ms$q_kind, levels = c("truth-telling", "niceness", "meanness"))
-p <- ggplot(subset(ms, answer!="NA"), 
-            aes(x=age, y=answer, fill=polite))
-p + 
-  geom_bar(position=position_dodge(), stat = "identity") +
-  facet_grid(q_kind~cond) +
-  geom_errorbar(position=position_dodge(.9), aes(ymin=ci_lower,ymax=ci_upper,width=.1)) +
-  ggtitle("Judgments for honest vs. dishonest speaker") +
-  geom_hline(yintercept=.50,lty=4) +
-  ylab("Proportion \"yes\"") +
-  scale_fill_discrete(guide = guide_legend(title = "speaker")) 
-
-```
 
 # listener feeling inference
 
@@ -311,7 +228,7 @@ ms <- d1 %>%
   filter(age != "NA",
          answer != "0.5",
          !is.na(answer)) %>%
-  group_by(site, age, answer) %>%
+  group_by(site, age, polite, answer) %>%
   summarize(count=n()) %>%
   mutate(perc=count/sum(count)) %>%
 #   multi_boot_standard(column = "perc") %>%
@@ -321,18 +238,19 @@ ms <- d1 %>%
          # site = factor(site, labels = c("US", "India")))
  
 ms$answer <- relevel(as.factor(ms$answer), ref="1")
+levels(ms$answer) <- c("good", "bad")
 
 p <- ggplot(subset(ms, answer!="NA"), 
             aes(x=age, y=perc, fill=answer))
 
 p + 
   geom_bar(stat="identity", width = 0.7) +
-  facet_grid(.~site) +
+  facet_grid(site~polite) +
   ggtitle("Listener's feeling inference") +
   # geom_errorbar(position=position_dodge(.9), aes(ymin=ci_lower,ymax=ci_upper,width=.1)) +
   geom_hline(yintercept=.50,lty=4) +
-  ylab("Feeling bad (0) vs. good (1)") +
-  scale_fill_discrete(guide = guide_legend(title = "speaker"))   
+  ylab("Proportion of responses") +
+  scale_fill_discrete(guide = guide_legend(title = "listener felt"))   
 
 ```  
 
