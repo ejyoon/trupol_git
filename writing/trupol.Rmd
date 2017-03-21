@@ -1,0 +1,531 @@
+---
+title: "Children’s reasoning about honest versus polite speakers"
+short-title: "Children's reasoning about politeness"
+output: kmr::apa_manuscript
+csl: apa6.csl
+bibliography: trupol.bib
+
+document-params: "a4paper,man,apacite,floatsintext"
+
+bib-tex: "library.bib"
+
+author-information:
+    - \author{Erica J. Yoon, Michael C. Frank}
+
+affiliation-information:
+    # Single affiliation
+    - \affiliation{Department of Psychology, Stanford University}
+
+author-note:
+    "The Author Note, containing contact information, acknowledgements, etc"
+    
+abstract: 
+    "Abstract text."
+    
+keywords:
+    "If provided, keywords will be displayed on a line beneath the abstract."
+---
+
+```{r global_options, include=FALSE}
+rm(list=ls())
+knitr::opts_chunk$set(fig.width=6, fig.height=5, fig.crop = F, fig.path='figs/',
+                      echo=FALSE, warning=FALSE, cache=T, message=FALSE, sanitize = T)
+```
+
+```{r preprocess}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(langcog)
+library(ggthemes)
+library(lme4)
+library(xtable)
+
+# source("/Users/ericang/Documents/Research/trupol_GIT/data/version1/helper/useful.R")
+
+d1 <- read.csv("/Users/ericang/Documents/Research/trupol_GIT/data/version2/trupol_data_all.csv")
+
+d1$age <- as.factor(as.character(d1$age))
+d1$order <- as.factor(as.character(d1$order))
+d1$site <- as.factor(as.character(d1$site))
+d1$polite <- as.factor(as.character(d1$polite))
+d1$q_kind <- as.factor(as.character(d1$q_kind))
+d1$cond <- as.factor(as.character(d1$cond))
+d1$answer <- as.factor(as.character(d1$answer))
+levels(d1$cond) <- c("cont", "exp", "exp")
+# levels(d1$site) <- c("India", "India", "US", "US")
+# levels(d1$answer) <- c("1", "1", "0", "0", "0", "1") # honest coded as '1'
+# d1$answer <- as.numeric(as.character(d1$answer))
+# levels(d1$answer) <- c(NA, 0, 0.5, 1, "character", 1, 1, "misc", 0, "listener_concern", 0, 0, "state_concern", "state_concern", "veracity_concern", 1)
+```
+
+# Introduction 
+
+# Experiment 1A
+
+## Method
+
+```{r count_subj}
+subj <- d1 %>%
+  distinct(subid, .keep_all=TRUE) %>%
+  group_by(site, cond, age) %>%
+  summarise(count = n())
+# subj
+
+count_us_6y_exp <- subj$count[10]
+count_us_8y_exp <- subj$count[11]
+count_us_adult_exp <- subj$count[12]
+```
+
+### Participants
+
+Parents and their 5-6- and 7-8-year-old children visiting Children’s Discovery Museum in San Jose, CA, were invited to participate in a short study. ...FIXME... These exclusion criteria led to a final sample of `r subj$count[10]` 5-6-year-olds and `r subj$count[11]` 7-8-year-olds. 
+
+Adult participants were recruited through Amazon Mechanical Turk. ...FIXME... These exclusion criteria led to a final sample of `r subj$count[12]` adult participants that were included in the analysis.
+
+## Results and Discussion
+
+```{r plot_1a}
+ms <- d1 %>%
+  filter(q_kind == "niceness" | q_kind == "meanness" | q_kind == "truth-telling") %>%
+  filter(!is.na(age)) %>%
+  filter(cond == "exp") %>%
+  mutate(answer = as.numeric(as.character(answer))) %>%
+  group_by(site, age, polite, q_kind, subid) %>%
+  summarize(
+    answer = mean(answer, na.rm=TRUE)
+  ) %>%
+  group_by(site, age, polite, q_kind) %>%
+  multi_boot_standard(column = "answer", na.rm=TRUE) %>%
+  mutate(answer = mean)
+
+# levels(ms$cond) <- c("control", "experimental")
+# levels(ms$site) <- c("India", "India", "US", "US")
+levels(ms$polite) <- c("honest", "dishonest")
+levels(ms$age) <- c("5-6", "7-8", "Adults")
+ms$q_kind <- factor(ms$q_kind, levels = c("truth-telling", "niceness", "meanness"))
+ms$site <- relevel(ms$site, ref="US")
+```
+
+```{r fig.height=4}
+# within us, all three kinds of ratings
+ms$q_kind <- factor(ms$q_kind, labels = c("telling the truth", "nice", "mean"))
+levels(ms$polite) <- c("honest", "dishonest \n(but polite)")
+
+p <- ggplot(filter(ms, answer!="NA",
+                   q_kind=="telling the truth",
+                   site=="US"), 
+            aes(x=age, y=answer, fill=polite))
+p + 
+  geom_bar(position=position_dodge(), stat = "identity") +
+  # facet_grid(.~q_kind) +
+  geom_errorbar(position=position_dodge(.9), aes(ymin=ci_lower,ymax=ci_upper,width=.1)) +
+  # ggtitle("Honest vs. dishonest speaker") +
+  geom_hline(yintercept=.50,lty=4) +
+  xlab("Age (years)") +
+  ylab("Proportion \n \"yes [the speaker was telling the truth]\"") +
+  scale_fill_discrete(guide = guide_legend(title = "speaker")) +
+  theme_few() +
+  ylim(0, 1)
+```
+```{r stat_truth}
+ms_stat <- d1 %>%
+  filter(q_kind == "niceness" | q_kind == "meanness" | q_kind == "truth-telling") %>%
+  filter(!is.na(age)) %>%
+  filter(cond == "exp") %>%
+  mutate(answer = as.numeric(as.character(answer))) %>%
+  select(site, age, polite, q_kind, subid, answer)
+
+lmer_truth <- glmer(data=filter(ms_stat, q_kind == "truth-telling", site == "US"), family=binomial, answer ~ age * polite + (1 | subid))
+
+truth.speaker.beta <- round(summary(lmer_truth)$coef[4], 2)
+```
+
+```{r truthsummarytab, echo = F, results = 'asis'}
+truth.tab <- as.data.frame(summary(lmer_truth)$coef)
+
+truth.tab$Predictor <- c("Intercept",
+                      "8-year-olds",
+                      "Adults",
+                      "Polite speaker",
+                      "8-year-olds * Polite speaker",
+                      "Adults * Polite speaker")
+rownames(truth.tab) <- NULL
+truth.tab <- truth.tab[,c(5,1:3)]
+names(truth.tab)[4] <- c("$z$ value")
+
+print(xtable(truth.tab,
+             align = c("l","l","r","r", "r"),
+             label = "tab:nice_tab",
+             caption = "Predictor estimates with standard errors and significance information for a generalized linear mixed-effects model predicting speaker truth-telling judgments"),
+      include.rownames=FALSE,hline.after=c(0,nrow(truth.tab)),
+      sanitize.text.function=function(x){x},
+      caption.placement = 'bottom', 
+      table.placement = "h",
+      comment = F)
+```
+
+```{r truthttest}
+ttest.truth.adult.honest = t.test(filter(ms_stat, q_kind == "truth-telling", site == "US", age == "adult", polite == "honest")$answer, mu=.5)
+ttest.truth.adult.polite = t.test(filter(ms_stat, q_kind == "truth-telling", site == "US", age == "adult", polite == "polite")$answer, mu=.5)
+ttest.truth.8y.honest = t.test(filter(ms_stat, q_kind == "truth-telling", site == "US", age == "8", polite == "honest")$answer, mu=.5)
+ttest.truth.8y.polite = t.test(filter(ms_stat, q_kind == "truth-telling", site == "US", age == "8", polite == "polite")$answer, mu=.5)
+ttest.truth.6y.honest = t.test(filter(ms_stat, q_kind == "truth-telling", site == "US", age == "6", polite == "honest")$answer, mu=.5)
+ttest.truth.6y.polite = t.test(filter(ms_stat, q_kind == "truth-telling", site == "US", age == "6", polite == "polite")$answer, mu=.5)
+```
+
+Across all age groups, adults and children correctly judged the honest speaker to be telling the truth, and the polite speaker as not telling the truth. A generalized linear mixed-effects model predicting truth-telling judgment based on age and speaker type showed a significant main effect of speaker type ($\beta$ = `r truth.speaker.beta`, $p <.001$). There was no main effect of age, and no interaction between age and speaker type. Thus, even the youngest group of participants we tested were able to correctly reason that the honest speaker was telling the truth, whereas the polite speaker was lying.
+
+```{r fig.height=4}
+p <- ggplot(filter(ms, answer!="NA",
+                   q_kind=="nice",
+                   site=="US"), 
+            aes(x=age, y=answer, fill=polite))
+p + 
+  geom_bar(position=position_dodge(), stat = "identity") +
+  # facet_grid(.~q_kind) +
+  geom_errorbar(position=position_dodge(.9), aes(ymin=ci_lower,ymax=ci_upper,width=.1)) +
+  # ggtitle("Honest vs. dishonest speaker") +
+  geom_hline(yintercept=.50,lty=4) +
+  xlab("Age (years)") +
+  ylab("Proportion \n \"yes [the speaker was nice]\"") +
+  scale_fill_discrete(guide = guide_legend(title = "speaker")) +
+  theme_few() +
+  ylim(0, 1)
+```
+
+```{r stat_nice}
+ms_stat_nice <- ms_stat %>%
+  filter(q_kind == "niceness", site == "US") %>%
+  mutate(age = factor(age, levels = c("8", "6", "adult")))
+lmer_nice <- glmer(data=ms_stat_nice, family=binomial, answer ~ age * polite + (1 | subid))
+
+nice.age6_speaker.beta <- round(summary(lmer_nice)$coef[5], 2)
+nice.adult_speaker.beta <- round(summary(lmer_nice)$coef[6], 2)
+
+```
+
+```{r nicesummarytab, echo = F, results = 'asis'}
+nice.tab <- as.data.frame(summary(lmer_nice)$coef)
+
+nice.tab$Predictor <- c("Intercept",
+                      "6-year-olds",
+                      "Adults",
+                      "Polite speaker",
+                      "6-year-olds * Polite speaker",
+                      "Adults * Polite speaker")
+rownames(nice.tab) <- NULL
+nice.tab <- nice.tab[,c(5,1:3)]
+names(nice.tab)[4] <- c("$z$ value")
+
+print(xtable(nice.tab,
+             align = c("l","l","r","r", "r"),
+             label = "tab:nice_tab",
+             caption = "Predictor estimates with standard errors and significance information for a generalized linear mixed-effects model predicting speaker niceness judgments"),
+      include.rownames=FALSE,hline.after=c(0,nrow(nice.tab)),
+      sanitize.text.function=function(x){x},
+      caption.placement = 'bottom', 
+      table.placement = "h",
+      comment = F)
+```
+
+```{r nicettest}
+ttest.nice.adult.honest = t.test(filter(ms_stat, q_kind == "niceness", site == "US", age == "adult", polite == "honest")$answer, mu=.5)
+ttest.nice.adult.polite = t.test(filter(ms_stat, q_kind == "niceness", site == "US", age == "adult", polite == "polite")$answer, mu=.5)
+ttest.nice.8y.honest = t.test(filter(ms_stat, q_kind == "niceness", site == "US", age == "8", polite == "honest")$answer, mu=.5)
+ttest.nice.8y.polite = t.test(filter(ms_stat, q_kind == "niceness", site == "US", age == "8", polite == "polite")$answer, mu=.5)
+ttest.nice.6y.honest = t.test(filter(ms_stat, q_kind == "niceness", site == "US", age == "6", polite == "honest")$answer, mu=.5)
+ttest.nice.6y.polite = t.test(filter(ms_stat, q_kind == "niceness", site == "US", age == "6", polite == "polite")$answer, mu=.5)
+
+ttest.nice.8y.honest.df = round(ttest.nice.8y.honest$parameter, 2)
+ttest.nice.8y.honest.t = round(ttest.nice.8y.honest$statistic, 2)
+ttest.nice.8y.honest.p = round(ttest.nice.8y.honest$p.value, 3)
+
+ttest.nice.6y.honest.df = round(ttest.nice.6y.honest$parameter, 2)
+ttest.nice.6y.honest.t = round(ttest.nice.6y.honest$statistic, 2)
+ttest.nice.6y.honest.p = round(ttest.nice.6y.honest$p.value, 3)
+
+```
+
+There was a clear developmental trend in judgments of speaker niceness. Whereas adults and 7-8-year-olds judged the polite speaker to be nice and the honest speaker to be not nice ($|t|$ > `r ttest.nice.8y.honest.t`, $p <`r ttest.nice.8y.honest.p`$), 5-6-year-olds did not judge either speaker to be nice or not nice ($|t|$ < `r ttest.nice.6y.honest.t`, $p >`r ttest.nice.6y.honest.p`$), not differentiating between the two speaker types. A generalized linear mixed-effects model predicting niceness judgment based on age and speaker type revealed a significant interaction between age and speaker type (6- vs. 8-year-olds: $\beta$ = `r nice.age6_speaker.beta`, $p =.002$; 8-year-olds vs. adults: $\beta$ = `r nice.adult_speaker.beta`, $p =.005$). These findings show that as children grow older, they become more adult-like in their judgment of the polite but dishonest speaker as "nice". 
+
+Then what underlie these changes in judgments as children grow older? There are two possible interpretations: One possible explanation is older children are more proficient at inferring other people’s mental states (Wellman & Liu, 2003), leading them to place more weight on the addressee’s feelings in evaluating a white lie or blunt truth. Since a white lie would make the addressee feel good, older children may have reasoned that the polite lie-teller was being nice, whereas younger children did not reach that level of reasoning. 
+
+Another possibility is that younger and older children use different communicative goals; younger children may prioritize honesty, which caused them to judge lie-tellers as not nice relatively more often, whereas older children value politeness more. 
+
+
+```{r fig.height=4}
+p <- ggplot(filter(ms, answer!="NA",
+                   q_kind=="mean",
+                   site=="US"), 
+            aes(x=age, y=answer, fill=polite))
+p + 
+  geom_bar(position=position_dodge(), stat = "identity") +
+  # facet_grid(.~q_kind) +
+  geom_errorbar(position=position_dodge(.9), aes(ymin=ci_lower,ymax=ci_upper,width=.1)) +
+  # ggtitle("Honest vs. dishonest speaker") +
+  geom_hline(yintercept=.50,lty=4) +
+  xlab("Age (years)") +
+  ylab("Proportion \n \"yes [the speaker was mean]\"") +
+  scale_fill_discrete(guide = guide_legend(title = "speaker")) +
+  theme_few() +
+  ylim(0, 1)
+```
+
+```{r stat_mean}
+
+ms_stat_mean <- ms_stat %>%
+  filter(q_kind == "meanness", site == "US") %>%
+  mutate(age = factor(age, levels = c("8", "6", "adult")))
+
+lmer_mean <- glmer(data=ms_stat_mean, family=binomial, answer ~ age * polite + (1 | subid))
+
+mean.age6_speaker.beta <- round(summary(lmer_mean)$coef[5], 2)
+mean.adult_speaker.beta <- round(summary(lmer_mean)$coef[6], 2)
+
+```
+
+```{r meansummarytab, echo = F, results = 'asis'}
+mean.tab <- as.data.frame(summary(lmer_mean)$coef)
+
+mean.tab$Predictor <- c("Intercept",
+                      "6-year-olds",
+                      "Adults",
+                      "Polite speaker",
+                      "6-year-olds * Polite speaker",
+                      "Adults * Polite speaker")
+rownames(mean.tab) <- NULL
+mean.tab <- mean.tab[,c(5,1:3)]
+names(mean.tab)[4] <- c("$z$ value")
+
+print(xtable(mean.tab,
+             align = c("l","l","r","r", "r"),
+             label = "tab:nice_tab",
+             caption = "Predictor estimates with standard errors and significance information for a generalized linear mixed-effects model predicting speaker meanness judgments"),
+      include.rownames=FALSE,hline.after=c(0,nrow(mean.tab)),
+      sanitize.text.function=function(x){x},
+      caption.placement = 'bottom', 
+      table.placement = "h",
+      comment = F)
+```
+
+```{r meanttest}
+ttest.mean.adult.honest = t.test(filter(ms_stat, q_kind == "meanness", site == "US", age == "adult", polite == "honest")$answer, mu=.5)
+ttest.mean.adult.polite = t.test(filter(ms_stat, q_kind == "meanness", site == "US", age == "adult", polite == "polite")$answer, mu=.5)
+ttest.mean.8y.honest = t.test(filter(ms_stat, q_kind == "meanness", site == "US", age == "8", polite == "honest")$answer, mu=.5)
+ttest.mean.8y.polite = t.test(filter(ms_stat, q_kind == "meanness", site == "US", age == "8", polite == "polite")$answer, mu=.5)
+ttest.mean.6y.honest = t.test(filter(ms_stat, q_kind == "meanness", site == "US", age == "6", polite == "honest")$answer, mu=.5)
+ttest.mean.6y.polite = t.test(filter(ms_stat, q_kind == "meanness", site == "US", age == "6", polite == "polite")$answer, mu=.5)
+
+ttest.mean.adult.honest.df = round(ttest.mean.adult.honest$parameter, 2)
+ttest.mean.adult.honest.t = round(ttest.mean.adult.honest$statistic, 2)
+ttest.mean.adult.honest.p = round(ttest.mean.adult.honest$p.value, 3)
+
+ttest.mean.8y.honest.df = round(ttest.mean.8y.honest$parameter, 2)
+ttest.mean.8y.honest.t = round(ttest.mean.8y.honest$statistic, 2)
+ttest.mean.8y.honest.p = round(ttest.mean.8y.honest$p.value, 3)
+
+ttest.mean.8y.polite.df = round(ttest.mean.8y.polite$parameter, 2)
+ttest.mean.8y.polite.t = round(ttest.mean.8y.polite$statistic, 2)
+ttest.mean.8y.polite.p = round(ttest.mean.8y.polite$p.value, 3)
+
+ttest.mean.6y.honest.df = round(ttest.mean.6y.honest$parameter, 2)
+ttest.mean.6y.honest.t = round(ttest.mean.6y.honest$statistic, 2)
+ttest.mean.6y.honest.p = round(ttest.mean.6y.honest$p.value, 3)
+
+```
+
+The judgments of speaker meanness also revealed a developmental trend that resembled that for the niceness judgment, though to a lesser extent. Whereas adults tended to judge the honest speaker (i.e. blunt truth-teller) to be mean ($t$(`r ttest.mean.adult.honest.df`) = `r ttest.mean.adult.honest.t`, $p =`r ttest.mean.adult.honest.p`$) 5-6-year-olds tended to judge in the opposite direction ($t$(`r ttest.mean.6y.honest.df`) = `r ttest.mean.6y.honest.t`, $p =`r ttest.mean.6y.honest.p`$). 7-8-year-olds' judgments did not differ from chance ($t$(`r ttest.mean.8y.honest.df`) = `r ttest.mean.8y.honest.t`, $p =`r ttest.mean.8y.honest.p`$). On the other hand, adults and 7-8-year-olds tended to judge the polite speaker to be not mean (7-8-year-olds: $t$(`r ttest.mean.8y.polite.df`) = `r ttest.mean.8y.polite.t`, $p =`r ttest.mean.8y.polite.p`$), whereas 5-6-year-olds' judgments did not differ from chance. Thus, older participants tended to judge the blunt truth-teller to be mean and the white lie-teller to be nice, whereas 5-6-year-olds did not, if not leaning toward the opposite direction. 
+
+```{r}
+ms_jitter <- ms_stat %>%
+  filter(site == "US") %>%
+  filter(q_kind == "niceness" | q_kind == "meanness") %>%
+  group_by(age, q_kind, polite, subid) %>%
+  summarize(answer = mean(answer)) %>%
+  mutate(answer = as.factor(answer)) %>%
+  filter(!is.na(answer), answer!="0.75")
+  
+p <- ggplot(filter(ms_jitter, !is.na(answer), answer!="0.75"), 
+            aes(x=age, y=answer, color=as.factor(answer)))
+p + 
+  geom_jitter(height = 0.2) +
+  # geom_violin() +
+  scale_color_discrete(guide = "none") +
+  facet_grid(polite~q_kind) +
+  theme_few()
+
+```
+
+```{r stat_1A}
+# 
+# ms_stat_1A <- ms_stat %>%
+#   filter(site == "US") %>%
+#   mutate(age = factor(age, levels = c("8", "6", "adult")))
+# 
+# lmer_1A <- glmer(data=ms_stat_1A, family=binomial, answer ~ q_kind * age * polite + (1 | subid))
+
+```
+
+```{r}
+# site differences in niceness rating
+# p <- ggplot(filter(ms, answer!="NA",
+#                    q_kind=="niceness",
+#                    age!="3-4"), 
+#             aes(x=age, y=answer, fill=polite))
+# p + 
+#   geom_bar(position=position_dodge(), stat = "identity") +
+#   facet_grid(.~site) +
+#   geom_errorbar(position=position_dodge(.9), aes(ymin=ci_lower,ymax=ci_upper,width=.1)) +
+#   # ggtitle("Honest vs. dishonest speaker") +
+#   geom_hline(yintercept=.50,lty=4) +
+#   xlab("Age (years)") +
+#   ylab("Proportion \"yes, speaker is nice\"") +
+#   scale_fill_discrete(guide = guide_legend(title = "speaker"))
+
+```
+
+# Experiment 1B
+
+## Method
+
+## Results and Discussion
+
+```{r plot_1b}
+ms_cont <- d1 %>%
+  filter(q_kind == "niceness" | q_kind == "meanness" | q_kind == "truth-telling") %>%
+  filter(!is.na(age)) %>%
+  # filter(cond == "cont") %>%
+  mutate(answer = as.numeric(as.character(answer))) %>%
+  group_by(site, age, cond, polite, q_kind, subid) %>%
+  # group_by(site, age, polite, q_kind, subid) %>%
+  summarize(
+    answer = mean(answer, na.rm=TRUE)
+  ) %>%
+  group_by(site, age, cond, polite, q_kind) %>%
+  # group_by(site, age, polite, q_kind) %>%
+  multi_boot_standard(column = "answer", na.rm=TRUE) %>%
+  mutate(answer = mean)
+
+# levels(ms$cond) <- c("control", "experimental")
+# levels(ms$site) <- c("India", "India", "US", "US")
+levels(ms_cont$polite) <- c("honest", "dishonest")
+levels(ms_cont$age) <- c("5-6", "7-8", "Adults")
+ms_cont$q_kind <- factor(ms_cont$q_kind, levels = c("truth-telling", "niceness", "meanness"))
+ms_cont$site <- relevel(ms_cont$site, ref="US")
+```
+
+```{r fig.height=6}
+# within us, all three kinds of ratings
+ms_cont$q_kind <- factor(ms_cont$q_kind, labels = c("telling the truth", "nice", "mean"))
+levels(ms_cont$polite) <- c("honest", "dishonest")
+ms_cont$cond <- factor(ms_cont$cond, levels = c("exp", "cont"))
+levels(ms_cont$cond) <- c("Expt 1A: \ndishonest for politeness", "Expt 1B:\ndishonest for no reason")
+
+p <- ggplot(filter(ms_cont, answer!="NA",
+                   # q_kind=="telling the truth",
+                   site=="US"), 
+            aes(x=age, y=answer, fill=polite))
+p + 
+  geom_bar(position=position_dodge(), stat = "identity") +
+  facet_grid(q_kind~cond) +
+  geom_errorbar(position=position_dodge(.9), aes(ymin=ci_lower,ymax=ci_upper,width=.1)) +
+  # ggtitle("Honest vs. dishonest speaker") +
+  geom_hline(yintercept=.50,lty=4) +
+  xlab("Age (years)") +
+  ylab("Proportion \"yes [the speaker was _____]\"") +
+  scale_fill_discrete(guide = guide_legend(title = "speaker")) +
+  theme_few() +
+  ylim(0, 1)
+```
+
+
+```{r stat_1b_nice}
+ms_stat_1b <- d1 %>%
+  filter(q_kind == "niceness" | q_kind == "meanness" | q_kind == "truth-telling") %>%
+  filter(!is.na(age)) %>%
+  filter(cond == "cont") %>%
+  mutate(answer = as.numeric(as.character(answer))) %>%
+  select(site, age, polite, q_kind, subid, answer)
+
+ms_stat_1b_nice <- ms_stat_1b %>%
+  filter(q_kind == "niceness", site == "US") %>%
+  mutate(age = factor(age, levels = c("8", "6", "adult")))
+lmer_1b_nice <- glmer(data=ms_stat_1b_nice, family=binomial, answer ~ age * polite + (1 | subid))
+
+ms_stat_1b_mean <- ms_stat_1b %>%
+  filter(q_kind == "meanness", site == "US") %>%
+  mutate(age = factor(age, levels = c("8", "6", "adult")))
+lmer_1b_mean <- glmer(data=ms_stat_1b_mean, family=binomial, answer ~ age * polite + (1 | subid))
+```
+
+```{r 1bnicesummarytab, echo = F, results = 'asis'}
+nice.1b.tab <- as.data.frame(summary(lmer_1b_nice)$coef)
+
+nice.1b.tab$Predictor <- c("Intercept",
+                      "6-year-olds",
+                      "Adults",
+                      "Polite speaker",
+                      "6-year-olds * Polite speaker",
+                      "Adults * Polite speaker")
+rownames(nice.1b.tab) <- NULL
+nice.1b.tab <- nice.1b.tab[,c(5,1:3)]
+names(nice.1b.tab)[4] <- c("$z$ value")
+
+print(xtable(nice.1b.tab,
+             align = c("l","l","r","r", "r"),
+             label = "tab:1b_mean_tab",
+             caption = "Predictor estimates with standard errors and significance information for a generalized linear mixed-effects model predicting speaker niceness judgments for Expt 1B"),
+      include.rownames=FALSE,hline.after=c(0,nrow(nice.1b.tab)),
+      sanitize.text.function=function(x){x},
+      caption.placement = 'bottom', 
+      table.placement = "h",
+      comment = F)
+```
+
+```{r 1bmeansummarytab, echo = F, results = 'asis'}
+mean.1b.tab <- as.data.frame(summary(lmer_1b_mean)$coef)
+
+mean.1b.tab$Predictor <- c("Intercept",
+                      "6-year-olds",
+                      "Adults",
+                      "Polite speaker",
+                      "6-year-olds * Polite speaker",
+                      "Adults * Polite speaker")
+rownames(mean.tab) <- NULL
+mean.1b.tab <- mean.1b.tab[,c(5,1:3)]
+names(mean.1b.tab)[4] <- c("$z$ value")
+
+print(xtable(mean.1b.tab,
+             align = c("l","l","r","r", "r"),
+             label = "tab:1b_mean_tab",
+             caption = "Predictor estimates with standard errors and significance information for a generalized linear mixed-effects model predicting speaker meanness judgments for Expt 1B"),
+      include.rownames=FALSE,hline.after=c(0,nrow(mean.1b.tab)),
+      sanitize.text.function=function(x){x},
+      caption.placement = 'bottom', 
+      table.placement = "h",
+      comment = F)
+```
+
+```{r 1bnicettest}
+ttest.1b.nice.adult.honest = t.test(filter(ms_stat_1b, q_kind == "niceness", site == "US", age == "adult", polite == "honest")$answer, mu=.5)
+ttest.1b.nice.adult.polite = t.test(filter(ms_stat_1b, q_kind == "niceness", site == "US", age == "adult", polite == "polite")$answer, mu=.5)
+ttest.1b.nice.8y.honest = t.test(filter(ms_stat_1b, q_kind == "niceness", site == "US", age == "8", polite == "honest")$answer, mu=.5)
+ttest.1b.nice.8y.polite = t.test(filter(ms_stat_1b, q_kind == "niceness", site == "US", age == "8", polite == "polite")$answer, mu=.5)
+ttest.1b.nice.6y.honest = t.test(filter(ms_stat_1b, q_kind == "niceness", site == "US", age == "6", polite == "honest")$answer, mu=.5)
+ttest.1b.nice.6y.polite = t.test(filter(ms_stat_1b, q_kind == "niceness", site == "US", age == "6", polite == "polite")$answer, mu=.5)
+
+# ttest.nice.8y.honest.df = round(ttest.nice.8y.honest$parameter, 2)
+# ttest.nice.8y.honest.t = round(ttest.nice.8y.honest$statistic, 2)
+# ttest.nice.8y.honest.p = round(ttest.nice.8y.honest$p.value, 3)
+
+ttest.1b.nice.6y.polite.df = round(ttest.1b.nice.6y.polite$parameter, 2)
+ttest.1b.nice.6y.polite.t = round(ttest.1b.nice.6y.polite$statistic, 2)
+ttest.1b.nice.6y.polite.p = round(ttest.1b.nice.6y.polite$p.value, 3)
+
+```
+
+
+For the truth-telling judgments in Experiment 1B, children and adults showed similar response pattern to Expt 1A: they judged the honest speaker as truth-telling and dishonest speaker as not truth-telling. For the niceness judgments, however, the results were the reverse of the findings in Expt 1A: whereas adults and 7-8-year-olds overall tended to judge neither speaker to be nice or not nice (with the exception of adults judging the honest speaker to be nice above chance), 5-6-year-olds judged the honest speaker to be nice and dishonest speaker to be not nice ($|t|$ > `r ttest.1b.nice.6y.polite.t`, $p <`r ttest.1b.nice.6y.polite.p`$). 
+
+# References 

@@ -1,0 +1,12 @@
+base
+ggplot2
+dplyr
+tidyr
+langcog
+bootstrap
+Matrix
+lme4
+stringr
+reshape2
+ggthemes
+xtable
